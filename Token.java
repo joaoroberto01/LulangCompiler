@@ -7,6 +7,10 @@ public class Token {
         this.lexeme = lexeme;
     }
 
+    public Token(String lexeme) {
+        this.lexeme = lexeme;
+    }
+
     public String getLexeme() {
         return lexeme;
     }

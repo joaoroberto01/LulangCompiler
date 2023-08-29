@@ -60,6 +60,23 @@ public class Lexical {
     }
 
     private static Token handleIdentifierAndReservedWord() {
+        StringBuilder identifier = new StringBuilder(currentChar);
+
+        read();
+        while (Character.isLetterOrDigit(currentChar) || currentChar == '_') {
+            identifier.append(currentChar.toString());
+            read();
+        }
+        Token token = new Token(identifier.toString());
+
+        switch (identifier.toString()) {
+            case "programa":
+                token.setSymbol("sprograma");
+                break;
+            case "se":
+
+        }
+
         return null;
     }
 
