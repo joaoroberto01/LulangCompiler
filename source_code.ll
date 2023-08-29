@@ -1,4 +1,16 @@
-{AB}
+{ teste procedimentos e funcoes aninhados recursivos OK
+escreva as sucessivas somas de traz para frente
+8
+8
+12
+8
+7
+- 5
+10 (FIM)
+saida
+2
+2
+20}
 programa test;
 var a,b,s: inteiro;
 
