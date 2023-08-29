@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
 
 public class Lexical {
     private static final String sourceCode = readFileAsString("source_code.ll");
@@ -27,13 +28,14 @@ public class Lexical {
 
             tokenList.add(token);
         }
+        System.out.println("\nacabou o semestre");
     }
 
     private static Token getToken() {
         if (Character.isDigit(currentChar)) {
             return handleDigit();
         } else if (Character.isLetter(currentChar)) {
-            //TODO tratar identificador e palavra reservada
+            return handleIdentifierAndReservedWord();
         } else if (currentChar == ':') {
             //TODO tratar atribuiçao
         } else if (ARITHMETHIC_OPERATORS.contains(currentChar)) {
@@ -50,7 +52,7 @@ public class Lexical {
     private static Token handleDigit() {
         StringBuilder number = new StringBuilder(currentChar);
 
-        read();
+//        read();
         while (Character.isDigit(currentChar)) {
             number.append(currentChar.toString());
             read();
@@ -62,27 +64,20 @@ public class Lexical {
     private static Token handleIdentifierAndReservedWord() {
         StringBuilder identifier = new StringBuilder(currentChar);
 
-        read();
+//        read();
         while (Character.isLetterOrDigit(currentChar) || currentChar == '_') {
             identifier.append(currentChar.toString());
             read();
         }
-        Token token = new Token(identifier.toString());
 
-        switch (identifier.toString()) {
-            case "programa":
-                token.setSymbol("sprograma");
-                break;
-            case "se":
+        String symbol = Token.reservedSymbols.getOrDefault(identifier.toString(), "sidentificador");
 
-        }
-
-        return null;
+        return new Token(symbol, identifier.toString());
     }
 
     private static void removeTrash() {
         read();
-        while(!eof()) {
+        //while(!eof()) {
             while ((currentChar == '{' || Character.isWhitespace(currentChar)) && !eof()) {
                 if (currentChar == '{') {
                     while (currentChar != '}' && !eof()) {
@@ -94,7 +89,7 @@ public class Lexical {
                     read();
                 }
             }
-        }
+//        }
     }
 
     //TODO trata atribuicao

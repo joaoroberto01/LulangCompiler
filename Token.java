@@ -1,3 +1,6 @@
+import java.util.AbstractMap;
+import java.util.Map;
+
 public class Token {
     private String symbol;
     private String lexeme;
@@ -26,4 +29,34 @@ public class Token {
     public void setSymbol(String symbol) {
         this.symbol = symbol;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s|%s]", symbol, lexeme);
+    }
+
+
+    public static final Map<String, String> reservedSymbols = Map.ofEntries(
+            new AbstractMap.SimpleImmutableEntry<>("programa", "sprograma"),
+            new AbstractMap.SimpleImmutableEntry<>("se", "sse"),
+            new AbstractMap.SimpleImmutableEntry<>("entao", "sentao"),
+            new AbstractMap.SimpleImmutableEntry<>("senao", "ssenao"),
+            new AbstractMap.SimpleImmutableEntry<>("enquanto", "senquanto"),
+            new AbstractMap.SimpleImmutableEntry<>("faca", "sfaca"),
+            new AbstractMap.SimpleImmutableEntry<>("inicio", "sinicio"),
+            new AbstractMap.SimpleImmutableEntry<>("fim", "sfim"),
+            new AbstractMap.SimpleImmutableEntry<>("escreva", "sescreva"),
+            new AbstractMap.SimpleImmutableEntry<>("leia", "sleia"),
+            new AbstractMap.SimpleImmutableEntry<>("var", "svar"),
+            new AbstractMap.SimpleImmutableEntry<>("inteiro", "sinteiro"),
+            new AbstractMap.SimpleImmutableEntry<>("booleano", "sbooleano"),
+            new AbstractMap.SimpleImmutableEntry<>("verdadeiro", "sverdadeiro"),
+            new AbstractMap.SimpleImmutableEntry<>("falso", "sfalso"),
+            new AbstractMap.SimpleImmutableEntry<>("procedimento", "sprocedimento"),
+            new AbstractMap.SimpleImmutableEntry<>("funcao", "sfuncao"),
+            new AbstractMap.SimpleImmutableEntry<>("div", "sdiv"),
+            new AbstractMap.SimpleImmutableEntry<>("e", "se"),
+            new AbstractMap.SimpleImmutableEntry<>("ou", "sou"),
+            new AbstractMap.SimpleImmutableEntry<>("nao", "snao")
+    );
 }
