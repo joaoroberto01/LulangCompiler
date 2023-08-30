@@ -37,9 +37,9 @@ public class Lexical {
         } else if (Character.isLetter(currentChar)) {
             return handleIdentifierAndReservedWord();
         } else if (currentChar == ':') {
-            //TODO tratar atribuiçao
+            return handleDigitAttribution();
         } else if (ARITHMETHIC_OPERATORS.contains(currentChar)) {
-            //TODO trata operadores aritmetico
+            return handleDigitArithmetic();
         } else if (RELATIONAL_OPERATORS.contains(currentChar)) {
             //TODO trata operadores relacional
         } else if (PUNCTUATION.contains(currentChar)) {
@@ -59,6 +59,40 @@ public class Lexical {
         }
 
         return new Token("snumero", number.toString());
+    }
+
+    private  static  Token handleDigitArithmetic(){
+
+
+        switch (currentChar) {
+            case '+' -> {
+                return new Token("smais", currentChar.toString());
+            }
+            case '-' -> {
+                return new Token("smenos", currentChar.toString());
+            }
+            case '*' -> {
+                return new Token("smult", currentChar.toString());
+            }
+        }
+
+         return new Token("teste", currentChar.toString());
+    }
+
+
+    private  static  Token handleDigitAttribution(){
+
+        read();
+        if(currentChar == '=')
+        {
+            return new Token("satribuicao", ":=");
+
+        }
+        else
+        {
+            return new Token("sdoispontos", ":");
+        }
+
     }
 
     private static Token handleIdentifierAndReservedWord() {
