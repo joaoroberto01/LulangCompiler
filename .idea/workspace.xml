@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d59deec9-f7b5-4dd6-82f4-22bfa5ddcdf0" name="Changes" comment="Begin handleIdentifier">
+    <list default="true" id="d59deec9-f7b5-4dd6-82f4-22bfa5ddcdf0" name="Changes" comment="Begin handleDigitAttribution and handleDigitArithmetic">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lexical.java" beforeDir="false" afterPath="$PROJECT_DIR$/Lexical.java" afterDir="false" />
     </list>
@@ -22,6 +22,23 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "MatheusAGomes"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="83e46c81-bb3b-41cb-ba0e-64e87c03f7bb" />
+        <option name="url" value="git@github.com:joaoroberto01/LulangCompiler.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -75,7 +92,7 @@
       <updated>1693342956701</updated>
       <workItem from="1693342957742" duration="8350000" />
       <workItem from="1693351678206" duration="50000" />
-      <workItem from="1693412367805" duration="1691000" />
+      <workItem from="1693412367805" duration="5187000" />
     </task>
     <task id="LOCAL-00001" summary="First commit">
       <created>1693348442055</created>
@@ -112,7 +129,15 @@
       <option name="project" value="LOCAL" />
       <updated>1693349778069</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Begin handleDigitAttribution and handleDigitArithmetic">
+      <option name="closed" value="true" />
+      <created>1693414124874</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1693414124874</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -123,18 +148,24 @@
     <MESSAGE value="Add git ignore" />
     <MESSAGE value="Fix" />
     <MESSAGE value="Begin handleIdentifier" />
-    <option name="LAST_COMMIT_MESSAGE" value="Begin handleIdentifier" />
+    <MESSAGE value="Begin handleDigitAttribution and handleDigitArithmetic" />
+    <option name="LAST_COMMIT_MESSAGE" value="Begin handleDigitAttribution and handleDigitArithmetic" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Lexical.java</url>
-          <line>30</line>
+          <line>31</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="currentChar" language="JAVA" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LulangCompiler$LulangApplication.ic" NAME="LulangApplication Coverage Results" MODIFIED="1693345953407" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

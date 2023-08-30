@@ -4,7 +4,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
 
 public class Lexical {
     private static final String sourceCode = readFileAsString("source_code.ll");
@@ -21,12 +20,14 @@ public class Lexical {
 
     public static void analyze() {
 
-
+        read();
         while (!eof()) {
             removeTrash();
             Token token = getToken();
 
             tokenList.add(token);
+
+
         }
         System.out.println("\nacabou o semestre");
     }
@@ -37,13 +38,16 @@ public class Lexical {
         } else if (Character.isLetter(currentChar)) {
             return handleIdentifierAndReservedWord();
         } else if (currentChar == ':') {
-            return handleDigitAttribution();
+            return handleAttribution();
         } else if (ARITHMETHIC_OPERATORS.contains(currentChar)) {
-            return handleDigitArithmetic();
+            return handleArithmetic();
         } else if (RELATIONAL_OPERATORS.contains(currentChar)) {
             //TODO trata operadores relacional
+
+            read();
         } else if (PUNCTUATION.contains(currentChar)) {
-            //TODO trata pontuaçao
+           return handlePunctuation();
+
         }
 
         return null;
@@ -52,7 +56,7 @@ public class Lexical {
     private static Token handleDigit() {
         StringBuilder number = new StringBuilder(currentChar);
 
-//        read();
+      // read();
         while (Character.isDigit(currentChar)) {
             number.append(currentChar.toString());
             read();
@@ -61,44 +65,45 @@ public class Lexical {
         return new Token("snumero", number.toString());
     }
 
-    private  static  Token handleDigitArithmetic(){
 
+    private static Token handleArithmetic(){
+
+        Token token = null;
 
         switch (currentChar) {
             case '+' -> {
-                return new Token("smais", currentChar.toString());
+                 token = new Token("smais", currentChar.toString());
             }
             case '-' -> {
-                return new Token("smenos", currentChar.toString());
+                token = new Token("smenos", currentChar.toString());
             }
             case '*' -> {
-                return new Token("smult", currentChar.toString());
+                token = new Token("smult", currentChar.toString());
             }
         }
-
-         return new Token("teste", currentChar.toString());
+        read();
+        return token;
     }
 
-
-    private  static  Token handleDigitAttribution(){
+    private  static Token handleAttribution(){
 
         read();
-        if(currentChar == '=')
+        if (currentChar == '=')
         {
-            return new Token("satribuicao", ":=");
+            return new Token("satribuição",":=");
 
         }
-        else
-        {
-            return new Token("sdoispontos", ":");
-        }
+        return new Token("sdoispontos",":");
+
 
     }
+
+
 
     private static Token handleIdentifierAndReservedWord() {
         StringBuilder identifier = new StringBuilder(currentChar);
 
-//        read();
+        //read();
         while (Character.isLetterOrDigit(currentChar) || currentChar == '_') {
             identifier.append(currentChar.toString());
             read();
@@ -110,7 +115,8 @@ public class Lexical {
     }
 
     private static void removeTrash() {
-        read();
+          // read();
+
         //while(!eof()) {
             while ((currentChar == '{' || Character.isWhitespace(currentChar)) && !eof()) {
                 if (currentChar == '{') {
@@ -127,6 +133,31 @@ public class Lexical {
     }
 
     //TODO trata atribuicao
+    private static Token handlePunctuation(){
+
+        Token token = null;
+        switch (currentChar) {
+            case ';' -> {
+                token = new Token("sponto_virgula", currentChar.toString());
+            }
+            case ',' -> {
+                token = new Token("svirgula", currentChar.toString());
+            }
+            case '(' -> {
+                token = new Token("sabre_parenteses", currentChar.toString());
+            }
+            case ')' -> {
+                token = new Token("sfecha_parenteses", currentChar.toString());
+            }
+            case '.' -> {
+                token = new Token("sponto", currentChar.toString());
+            }
+        }
+        read();
+        return token;
+
+
+    }
 
 
     //TODO trata pontuacao
