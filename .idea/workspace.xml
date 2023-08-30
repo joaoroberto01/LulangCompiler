@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d59deec9-f7b5-4dd6-82f4-22bfa5ddcdf0" name="Changes" comment="Begin handleDigitAttribution and handleDigitArithmetic">
+    <list default="true" id="d59deec9-f7b5-4dd6-82f4-22bfa5ddcdf0" name="Changes" comment="Begin handlePunctuation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lexical.java" beforeDir="false" afterPath="$PROJECT_DIR$/Lexical.java" afterDir="false" />
     </list>
@@ -92,7 +92,7 @@
       <updated>1693342956701</updated>
       <workItem from="1693342957742" duration="8350000" />
       <workItem from="1693351678206" duration="50000" />
-      <workItem from="1693412367805" duration="5187000" />
+      <workItem from="1693412367805" duration="6619000" />
     </task>
     <task id="LOCAL-00001" summary="First commit">
       <created>1693348442055</created>
@@ -137,7 +137,15 @@
       <option name="project" value="LOCAL" />
       <updated>1693414124874</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Begin handlePunctuation">
+      <option name="closed" value="true" />
+      <created>1693417669792</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1693417669792</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -149,7 +157,8 @@
     <MESSAGE value="Fix" />
     <MESSAGE value="Begin handleIdentifier" />
     <MESSAGE value="Begin handleDigitAttribution and handleDigitArithmetic" />
-    <option name="LAST_COMMIT_MESSAGE" value="Begin handleDigitAttribution and handleDigitArithmetic" />
+    <MESSAGE value="Begin handlePunctuation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Begin handlePunctuation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

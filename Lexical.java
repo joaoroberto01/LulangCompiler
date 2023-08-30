@@ -42,9 +42,7 @@ public class Lexical {
         } else if (ARITHMETHIC_OPERATORS.contains(currentChar)) {
             return handleArithmetic();
         } else if (RELATIONAL_OPERATORS.contains(currentChar)) {
-            //TODO trata operadores relacional
-
-            read();
+            return  handlerelationaloperators();
         } else if (PUNCTUATION.contains(currentChar)) {
            return handlePunctuation();
 
@@ -63,6 +61,39 @@ public class Lexical {
         }
 
         return new Token("snumero", number.toString());
+    }
+
+    private  static Token handlerelationaloperators(){
+        Token token = null;
+        switch (currentChar) {
+            case '>' -> {
+                read();
+                if (currentChar == '=') {
+                    token = new Token("smaiorig", ">=");
+
+                } else {
+                    token = new Token("smaior", ">");
+
+                }
+            }
+            case '<' -> {
+                read();
+                if (currentChar == '=') {
+                    token = new Token("smenorig", "<=");
+
+                } else {
+                    token = new Token("smenor", "<");
+
+                }
+            }
+            case '!' -> token = new Token("sdif", "!=");
+            case '=' -> token = new Token("sig", "=");
+        }
+        read();
+
+
+        return token;
+
     }
 
 
