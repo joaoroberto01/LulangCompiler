@@ -37,7 +37,7 @@ public class Lexical {
 
         read();
         while (notEof()) {
-            removeTrash();
+            handleCommentsAndWhitespaces();
             Token token = getToken();
 
             tokenList.add(token);
@@ -100,7 +100,6 @@ public class Lexical {
         }
         read();
 
-
         return token;
 
     }
@@ -122,7 +121,8 @@ public class Lexical {
     private static Token handleAttribution() {
         read();
         if (currentChar == '=') {
-            return new Token("satribuição",":=");
+            read();
+            return new Token("satribuicao",":=");
         }
 
         return new Token("sdoispontos",":");
@@ -140,24 +140,6 @@ public class Lexical {
         String symbol = Token.reservedSymbols.getOrDefault(identifier.toString(), "sidentificador");
 
         return new Token(symbol, identifier.toString());
-    }
-
-    private static void removeTrash() {
-          // read();
-
-        //while(!eof()) {
-        while ((currentChar == '{' || Character.isWhitespace(currentChar)) && notEof()) {
-            if (currentChar == '{') {
-                while (currentChar != '}' && notEof()) {
-                    read();
-                }
-                read(); //- JOAO E MATHEUS ACHAM LEGAM ISSO
-            }
-            while (Character.isWhitespace(currentChar) && notEof()) {
-                read();
-            }
-        }
-//        }
     }
 
     private static Token handlePunctuation(){
@@ -181,6 +163,24 @@ public class Lexical {
         }
         read();
         return token;
+    }
+
+    private static void handleCommentsAndWhitespaces() {
+        // read();
+
+        //while(!eof()) {
+        while ((currentChar == '{' || Character.isWhitespace(currentChar)) && notEof()) {
+            if (currentChar == '{') {
+                while (currentChar != '}' && notEof()) {
+                    read();
+                }
+                read(); //- JOAO E MATHEUS ACHAM LEGAM ISSO
+            }
+            while (Character.isWhitespace(currentChar) && notEof()) {
+                read();
+            }
+        }
+//        }
     }
 
     private static String readFileAsString(String filename) {
