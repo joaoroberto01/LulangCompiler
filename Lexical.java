@@ -40,7 +40,7 @@ public class Lexical {
         } else if (ARITHMETHIC_OPERATORS.contains(currentChar)) {
             return handleArithmetic();
         } else if (RELATIONAL_OPERATORS.contains(currentChar)) {
-            return  handleRelationalOperators();
+            return handleRelationalOperators();
         } else if (PUNCTUATION.contains(currentChar)) {
            return handlePunctuation();
         }
