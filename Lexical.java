@@ -12,8 +12,8 @@ public class Lexical {
     private static final List<Character> ARITHMETHIC_OPERATORS = Arrays.asList('+', '-', '*');
     private static final List<Character> RELATIONAL_OPERATORS = Arrays.asList('!', '<', '>', '=');
     private static final List<Character> PUNCTUATION = Arrays.asList(';', ',', '(', ')', '.');
+    private static final List<Token> tokenList = new ArrayList<>();
     private static int currentIndex = 0;
-    private static List<Token> tokenList = new ArrayList<>();
 
     private static Character currentChar;
 
@@ -21,13 +21,11 @@ public class Lexical {
     public static void analyze() {
 
         read();
-        while (!eof()) {
+        while (notEof()) {
             removeTrash();
             Token token = getToken();
 
             tokenList.add(token);
-
-
         }
         System.out.println("\nacabou o semestre");
     }
@@ -42,10 +40,9 @@ public class Lexical {
         } else if (ARITHMETHIC_OPERATORS.contains(currentChar)) {
             return handleArithmetic();
         } else if (RELATIONAL_OPERATORS.contains(currentChar)) {
-            return  handlerelationaloperators();
+            return  handleRelationalOperators();
         } else if (PUNCTUATION.contains(currentChar)) {
            return handlePunctuation();
-
         }
 
         return null;
@@ -63,27 +60,24 @@ public class Lexical {
         return new Token("snumero", number.toString());
     }
 
-    private  static Token handlerelationaloperators(){
+    private static Token handleRelationalOperators() {
         Token token = null;
+
         switch (currentChar) {
             case '>' -> {
                 read();
                 if (currentChar == '=') {
                     token = new Token("smaiorig", ">=");
-
                 } else {
                     token = new Token("smaior", ">");
-
                 }
             }
             case '<' -> {
                 read();
                 if (currentChar == '=') {
                     token = new Token("smenorig", "<=");
-
                 } else {
                     token = new Token("smenor", "<");
-
                 }
             }
             case '!' -> token = new Token("sdif", "!=");
@@ -97,39 +91,27 @@ public class Lexical {
     }
 
 
-    private static Token handleArithmetic(){
-
+    private static Token handleArithmetic() {
         Token token = null;
 
         switch (currentChar) {
-            case '+' -> {
-                 token = new Token("smais", currentChar.toString());
-            }
-            case '-' -> {
-                token = new Token("smenos", currentChar.toString());
-            }
-            case '*' -> {
-                token = new Token("smult", currentChar.toString());
-            }
+            case '+' -> token = new Token("smais", currentChar.toString());
+            case '-' -> token = new Token("smenos", currentChar.toString());
+            case '*' -> token = new Token("smult", currentChar.toString());
         }
+
         read();
         return token;
     }
 
-    private  static Token handleAttribution(){
-
+    private static Token handleAttribution() {
         read();
-        if (currentChar == '=')
-        {
+        if (currentChar == '=') {
             return new Token("satribuição",":=");
-
         }
+
         return new Token("sdoispontos",":");
-
-
     }
-
-
 
     private static Token handleIdentifierAndReservedWord() {
         StringBuilder identifier = new StringBuilder(currentChar);
@@ -149,23 +131,21 @@ public class Lexical {
           // read();
 
         //while(!eof()) {
-            while ((currentChar == '{' || Character.isWhitespace(currentChar)) && !eof()) {
-                if (currentChar == '{') {
-                    while (currentChar != '}' && !eof()) {
-                        read();
-                    }
-                    read(); //- JOAO E MATHEUS ACHAM LEGAM ISSO
-                }
-                while (Character.isWhitespace(currentChar) && !eof()) {
+        while ((currentChar == '{' || Character.isWhitespace(currentChar)) && notEof()) {
+            if (currentChar == '{') {
+                while (currentChar != '}' && notEof()) {
                     read();
                 }
+                read(); //- JOAO E MATHEUS ACHAM LEGAM ISSO
             }
+            while (Character.isWhitespace(currentChar) && notEof()) {
+                read();
+            }
+        }
 //        }
     }
 
-    //TODO trata atribuicao
     private static Token handlePunctuation(){
-
         Token token = null;
         switch (currentChar) {
             case ';' -> {
@@ -186,30 +166,22 @@ public class Lexical {
         }
         read();
         return token;
-
-
     }
-
-
-    //TODO trata pontuacao
-
-
 
     private static void read() {
         currentChar = sourceCode.charAt(currentIndex++);
     }
 
-    private static boolean eof() {
-        return currentIndex == length;
+    private static boolean notEof() {
+        return currentIndex != length;
     }
 
     private static String readFileAsString(String filename) {
-        String data = "";
         try {
-            data = new String(Files.readAllBytes(Paths.get(filename)));
+            return new String(Files.readAllBytes(Paths.get(filename)));
         } catch (IOException e) {
             e.printStackTrace();
+            return "";
         }
-        return data;
     }
 }
