@@ -35,8 +35,21 @@ public class Token {
         return String.format("[%s|%s]", symbol, lexeme);
     }
 
+    public static final Map<String, String> PUNCTUATION_SYMBOLS = Map.ofEntries(
+            new AbstractMap.SimpleImmutableEntry<>(";", "sponto_virgula"),
+            new AbstractMap.SimpleImmutableEntry<>(",", "svirgula"),
+            new AbstractMap.SimpleImmutableEntry<>("(", "sabre_parenteses"),
+            new AbstractMap.SimpleImmutableEntry<>(")", "sfecha_parenteses"),
+            new AbstractMap.SimpleImmutableEntry<>(".", "sponto")
+    );
 
-    public static final Map<String, String> reservedSymbols = Map.ofEntries(
+    public static final Map<String, String> ARITHMETHIC_SYMBOLS = Map.ofEntries(
+            new AbstractMap.SimpleImmutableEntry<>("+", "smais"),
+            new AbstractMap.SimpleImmutableEntry<>("-", "smenos"),
+            new AbstractMap.SimpleImmutableEntry<>("*", "smult")
+    );
+
+    public static final Map<String, String> RESERVED_SYMBOLS = Map.ofEntries(
             new AbstractMap.SimpleImmutableEntry<>("programa", "sprograma"),
             new AbstractMap.SimpleImmutableEntry<>("se", "sse"),
             new AbstractMap.SimpleImmutableEntry<>("entao", "sentao"),

@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d59deec9-f7b5-4dd6-82f4-22bfa5ddcdf0" name="Changes" comment="Fix bug: last character was not collected">
+    <list default="true" id="d59deec9-f7b5-4dd6-82f4-22bfa5ddcdf0" name="Changes" comment="Fix bug: atribution was collecting two tokens (':=', '=')">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lexical.java" beforeDir="false" afterPath="$PROJECT_DIR$/Lexical.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Token.java" beforeDir="false" afterPath="$PROJECT_DIR$/Token.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,7 +170,14 @@
       <option name="project" value="LOCAL" />
       <updated>1693446807464</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Fix bug: atribution was collecting two tokens (':=', '=')">
+      <created>1693447760874</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1693447760874</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -206,40 +215,16 @@
     <MESSAGE value="Begin handlePunctuation" />
     <MESSAGE value="Refactor code" />
     <MESSAGE value="Fix bug: last character was not collected" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix bug: last character was not collected" />
+    <MESSAGE value="Fix bug: atribution was collecting two tokens (':=', '=')" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix bug: atribution was collecting two tokens (':=', '=')" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Lexical.java</url>
-          <line>44</line>
+          <line>43</line>
           <option name="timeStamp" value="36" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Lexical.java</url>
-          <line>53</line>
-          <option name="timeStamp" value="37" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Lexical.java</url>
-          <line>57</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Lexical.java</url>
-          <line>80</line>
-          <option name="timeStamp" value="39" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Lexical.java</url>
-          <line>100</line>
-          <option name="timeStamp" value="40" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Lexical.java</url>
-          <line>102</line>
-          <option name="timeStamp" value="41" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

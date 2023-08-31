@@ -4,14 +4,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class Lexical {
     private static final String sourceCode = readFileAsString("source_code.ll");
     private static final int length = sourceCode.length();
 
-    private static final List<Character> ARITHMETHIC_OPERATORS = Arrays.asList('+', '-', '*');
     private static final List<Character> RELATIONAL_OPERATORS = Arrays.asList('!', '<', '>', '=');
-    private static final List<Character> PUNCTUATION = Arrays.asList(';', ',', '(', ')', '.');
     private static final List<Token> tokenList = new ArrayList<>();
     private static int currentIndex = -1;
     private static boolean eof;
@@ -52,11 +51,11 @@ public class Lexical {
             return handleIdentifierAndReservedWord();
         } else if (currentChar == ':') {
             return handleAttribution();
-        } else if (ARITHMETHIC_OPERATORS.contains(currentChar)) {
+        } else if (Token.ARITHMETHIC_SYMBOLS.containsKey(currentChar.toString())) {
             return handleArithmetic();
         } else if (RELATIONAL_OPERATORS.contains(currentChar)) {
             return handleRelationalOperators();
-        } else if (PUNCTUATION.contains(currentChar)) {
+        } else if (Token.PUNCTUATION_SYMBOLS.containsKey(currentChar.toString())) {
            return handlePunctuation();
         }
 
@@ -106,13 +105,7 @@ public class Lexical {
 
 
     private static Token handleArithmetic() {
-        Token token = null;
-
-        switch (currentChar) {
-            case '+' -> token = new Token("smais", currentChar.toString());
-            case '-' -> token = new Token("smenos", currentChar.toString());
-            case '*' -> token = new Token("smult", currentChar.toString());
-        }
+        Token token = getTokenByKey(currentChar.toString(), Token.ARITHMETHIC_SYMBOLS);
 
         read();
         return token;
@@ -137,30 +130,14 @@ public class Lexical {
             read();
         }
 
-        String symbol = Token.reservedSymbols.getOrDefault(identifier.toString(), "sidentificador");
+        String symbol = Token.RESERVED_SYMBOLS.getOrDefault(identifier.toString(), "sidentificador");
 
         return new Token(symbol, identifier.toString());
     }
 
     private static Token handlePunctuation(){
-        Token token = null;
-        switch (currentChar) {
-            case ';' -> {
-                token = new Token("sponto_virgula", currentChar.toString());
-            }
-            case ',' -> {
-                token = new Token("svirgula", currentChar.toString());
-            }
-            case '(' -> {
-                token = new Token("sabre_parenteses", currentChar.toString());
-            }
-            case ')' -> {
-                token = new Token("sfecha_parenteses", currentChar.toString());
-            }
-            case '.' -> {
-                token = new Token("sponto", currentChar.toString());
-            }
-        }
+        Token token = getTokenByKey(currentChar.toString(), Token.PUNCTUATION_SYMBOLS);
+
         read();
         return token;
     }
@@ -181,6 +158,13 @@ public class Lexical {
             }
         }
 //        }
+    }
+
+    private static Token getTokenByKey(String key, Map<String, String> symbolMap) {
+        if (!symbolMap.containsKey(key)) return null;
+
+        String symbol = symbolMap.get(key);
+        return new Token(symbol, key);
     }
 
     private static String readFileAsString(String filename) {
