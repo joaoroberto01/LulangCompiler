@@ -13,10 +13,25 @@ public class Lexical {
     private static final List<Character> RELATIONAL_OPERATORS = Arrays.asList('!', '<', '>', '=');
     private static final List<Character> PUNCTUATION = Arrays.asList(';', ',', '(', ')', '.');
     private static final List<Token> tokenList = new ArrayList<>();
-    private static int currentIndex = 0;
+    private static int currentIndex = -1;
+    private static boolean eof;
 
     private static Character currentChar;
 
+
+    private static void read() {
+        if (eof) return;
+
+        currentIndex++;
+        eof = currentIndex >= length;
+
+        if (eof) return;
+        currentChar = sourceCode.charAt(currentIndex);
+    }
+
+    private static boolean notEof() {
+        return currentIndex < length;
+    }
 
     public static void analyze() {
 
@@ -49,10 +64,10 @@ public class Lexical {
     }
 
     private static Token handleDigit() {
-        StringBuilder number = new StringBuilder(currentChar);
+        StringBuilder number = new StringBuilder(currentChar.toString());
 
-      // read();
-        while (Character.isDigit(currentChar)) {
+        read();
+        while (Character.isDigit(currentChar) && notEof()) {
             number.append(currentChar.toString());
             read();
         }
@@ -114,10 +129,10 @@ public class Lexical {
     }
 
     private static Token handleIdentifierAndReservedWord() {
-        StringBuilder identifier = new StringBuilder(currentChar);
+        StringBuilder identifier = new StringBuilder(currentChar.toString());
 
-        //read();
-        while (Character.isLetterOrDigit(currentChar) || currentChar == '_') {
+        read();
+        while ((Character.isLetterOrDigit(currentChar) || currentChar == '_') && notEof()) {
             identifier.append(currentChar.toString());
             read();
         }
@@ -166,14 +181,6 @@ public class Lexical {
         }
         read();
         return token;
-    }
-
-    private static void read() {
-        currentChar = sourceCode.charAt(currentIndex++);
-    }
-
-    private static boolean notEof() {
-        return currentIndex != length;
     }
 
     private static String readFileAsString(String filename) {
