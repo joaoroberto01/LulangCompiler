@@ -57,7 +57,7 @@ public class Lexical {
         } else if (RELATIONAL_OPERATORS.contains(currentChar)) {
             return handleRelationalOperators();
         } else if (Token.PUNCTUATION_SYMBOLS.containsKey(currentChar.toString())) {
-           return handlePunctuation();
+            return handlePunctuation();
         }
 
         Token errorToken = new Token("serro", currentChar.toString());
@@ -98,13 +98,13 @@ public class Lexical {
                 }
             }
             case '!' -> {
-                        read();
-                        if (currentChar == '=') {
-                            token = new Token("sdif", "!=");
-                        } else {
-                            token = new Token("serro", "!");
-                        }
-                    }
+                read();
+                if (currentChar == '=') {
+                    token = new Token("sdif", "!=");
+                } else {
+                    token = new Token("serro", "!");
+                }
+            }
 
             case '=' -> token = new Token("sig", "=");
         }
