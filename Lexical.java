@@ -15,6 +15,8 @@ public class Lexical {
     private static int currentIndex = -1;
     private static boolean eof;
 
+    private static boolean unclosedComment;
+
     private static Character currentChar;
 
 
@@ -33,7 +35,6 @@ public class Lexical {
     }
 
     public static void analyze() {
-
         read();
         while (notEof()) {
             handleCommentsAndWhitespaces();
@@ -59,7 +60,9 @@ public class Lexical {
            return handlePunctuation();
         }
 
-        return null;
+        Token errorToken = new Token("serro", currentChar.toString());
+        read();
+        return errorToken;
     }
 
     private static Token handleDigit() {
@@ -94,7 +97,15 @@ public class Lexical {
                     token = new Token("smenor", "<");
                 }
             }
-            case '!' -> token = new Token("sdif", "!=");
+            case '!' -> {
+                        read();
+                        if (currentChar == '=') {
+                            token = new Token("sdif", "!=");
+                        } else {
+                            token = new Token("serro", "!");
+                        }
+                    }
+
             case '=' -> token = new Token("sig", "=");
         }
         read();
@@ -143,13 +154,14 @@ public class Lexical {
     }
 
     private static void handleCommentsAndWhitespaces() {
-        // read();
-
-        //while(!eof()) {
         while ((currentChar == '{' || Character.isWhitespace(currentChar)) && notEof()) {
             if (currentChar == '{') {
                 while (currentChar != '}' && notEof()) {
                     read();
+                    if (eof) {
+                        tokenList.add(new Token("serro_comentario", "falta}"));
+                        return;
+                    }
                 }
                 read(); //- JOAO E MATHEUS ACHAM LEGAM ISSO
             }
@@ -157,7 +169,6 @@ public class Lexical {
                 read();
             }
         }
-//        }
     }
 
     private static Token getTokenByKey(String key, Map<String, String> symbolMap) {
