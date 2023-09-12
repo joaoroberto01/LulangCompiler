@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+//TODO Conversar com Freitas sobre funcões nativas do JAVA
+//TODO MOSTRAR AO Freitas (linha 43) unclosed
 
 public class Lexical {
     private static final String sourceCode = readFileAsString("source_code.ll");
@@ -38,6 +40,8 @@ public class Lexical {
         read();
         while (notEof()) {
             handleCommentsAndWhitespaces();
+            if(unclosedComment)
+                break;
             Token token = getToken();
 
             tokenList.add(token);
@@ -86,7 +90,7 @@ public class Lexical {
                 if (currentChar == '=') {
                     token = new Token("smaiorig", ">=");
                 } else {
-                    token = new Token("smaior", ">");
+                    return new Token("smaior", ">");
                 }
             }
             case '<' -> {
@@ -94,7 +98,7 @@ public class Lexical {
                 if (currentChar == '=') {
                     token = new Token("smenorig", "<=");
                 } else {
-                    token = new Token("smenor", "<");
+                    return new Token("smenor", "<");
                 }
             }
             case '!' -> {
@@ -102,13 +106,13 @@ public class Lexical {
                 if (currentChar == '=') {
                     token = new Token("sdif", "!=");
                 } else {
-                    token = new Token("serro", "!");
+                    return new Token("serro", "!");
                 }
             }
 
             case '=' -> token = new Token("sig", "=");
         }
-        read();
+        read(); //Leitura em caso de simbolo composto
 
         return token;
 
@@ -160,6 +164,7 @@ public class Lexical {
                     read();
                     if (eof) {
                         tokenList.add(new Token("serro_comentario", "falta}"));
+                        unclosedComment = true;
                         return;
                     }
                 }
