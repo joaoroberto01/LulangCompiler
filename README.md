@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Welcome to the Lulang Compiler project, developed as part of the curriculum at [University Name]. Lulang Compiler is being crafted using Java and is designed to process a unique programming language, Lulang, and generate corresponding output.
+Welcome to the Lulang Compiler project, developed with academic purpopes, using Java and is designed to process a unique programming language, Lulang, and generate corresponding output.
 
 ## Features
 
