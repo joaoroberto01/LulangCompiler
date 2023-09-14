@@ -40,7 +40,7 @@ public class Lexical {
         read();
         while (notEof()) {
             handleCommentsAndWhitespaces();
-            if(unclosedComment)
+            if(unclosedComment || eof)
                 break;
             Token token = getToken();
 
