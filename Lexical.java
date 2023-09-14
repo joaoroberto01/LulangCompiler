@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-//TODO Conversar com Freitas sobre funcões nativas do JAVA
-//TODO MOSTRAR AO Freitas (linha 43) unclosed
+
 
 public class Lexical {
     private static final String sourceCode = readFileAsString("source_code.ll");
@@ -44,15 +43,39 @@ public class Lexical {
                 break;
             Token token = getToken();
 
-            tokenList.add(token);
+            //tokenList.add(token);
         }
         System.out.println("\nacabou o semestre");
+    }
+
+
+    public static Token nextToken() {
+        read();
+
+            handleCommentsAndWhitespaces();
+            if(unclosedComment || eof)
+                return  null;
+            return getToken();
+
+            //tokenList.add(token);
+
+    }
+    public static boolean isAlphabetCharacter(char c) {
+        int ascii = (int) c;
+
+        return (ascii >= 65 && ascii <= 90) || (ascii >= 97 && ascii <= 122);
+    }
+
+    public static boolean isNumber(char c) {
+        int number = (int)  c;
+
+        return (number >= 48 && number <= 57);
     }
 
     private static Token getToken() {
         if (Character.isDigit(currentChar)) {
             return handleDigit();
-        } else if (Character.isLetter(currentChar)) {
+        } else if (isAlphabetCharacter(currentChar)) {
             return handleIdentifierAndReservedWord();
         } else if (currentChar == ':') {
             return handleAttribution();
@@ -140,7 +163,7 @@ public class Lexical {
         StringBuilder identifier = new StringBuilder(currentChar.toString());
 
         read();
-        while ((Character.isLetterOrDigit(currentChar) || currentChar == '_') && notEof()) {
+        while ((isAlphabetCharacter(currentChar) || isNumber(currentChar) || currentChar == '_') && notEof()) {
             identifier.append(currentChar.toString());
             read();
         }
