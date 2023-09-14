@@ -72,4 +72,12 @@ public class Token {
             new AbstractMap.SimpleImmutableEntry<>("ou", "sou"),
             new AbstractMap.SimpleImmutableEntry<>("nao", "snao")
     );
+
+    public Boolean is(String symbol) {
+
+            return  this.symbol.equals(symbol);
+
+    }
+
+
 }
