@@ -6,7 +6,6 @@ public class Syntactic {
         currentToken = Lexical.nextToken();
     }
 
-
     public static void analyze() {
         //rotulo
 
@@ -42,24 +41,21 @@ public class Syntactic {
         analyzeVariablesStep();
         // ANALISA SUBROTINAS
         analyzeCommands();
-
     }
 
     private static void analyzeCommands() {
         if (!currentToken.is("sinicio")) {
-         //ERRO
+            //ERRO
             return;
         }
-        analyzeSimpleCommand() ;
-        while (!currentToken.is("sfim"))
-        {
+        analyzeSimpleCommand();
+        while (!currentToken.is("sfim")) {
             if (!currentToken.is("spontovirgula")) {
                 //ERRO
                 return;
             }
             read();
-            if (!currentToken.is("sfim"))
-            {
+            if (!currentToken.is("sfim")) {
                 analyzeSimpleCommand();
             }
         }
@@ -67,61 +63,45 @@ public class Syntactic {
     }
 
     private static void analyzeSimpleCommand() {
-        if (currentToken.is("sidentificador"))
-        {
+        if (currentToken.is("sidentificador")) {
             analyzeAtribCallProc();
-        }
-        else if(currentToken.is("sse")){
+        } else if (currentToken.is("sse")) {
             //Analisa_se
-        }
-        else if(currentToken.is("senquanto")){
+        } else if (currentToken.is("senquanto")) {
 //Analisa_enquanto
-        }
-        else if(currentToken.is("sleia")){
+        } else if (currentToken.is("sleia")) {
             analyzeRead();
-        }
-        else if(currentToken.is("sescreva")){
+        } else if (currentToken.is("sescreva")) {
 //Analisa_ escreva
-        }
-        else
-        {
+        } else {
 //Analisa_comandos
         }
     }
 
     private static void analyzeAtribCallProc() {
-            read();
-        if(currentToken.is("satribuição"))
-        {
-        //Analisa_atribuicao
-        }
-        else
-        {
+        read();
+        if (currentToken.is("satribuição")) {
+            //Analisa_atribuicao
+        } else {
             //Chamada_procedimento
         }
     }
 
     private static void analyzeRead() {
-    read();
-        if(
-                !currentToken.is("sabre_parenteses"))
-        {
+        read();
+        if (!currentToken.is("sabre_parenteses")) {
             //erro
             return;
         }
         read();
-        if(
-                !currentToken.is("sidentificador"))
-        {
+        if (!currentToken.is("sidentificador")) {
             //erro
             return;
         }
         //if pesquisa
 
         read();
-        if(
-                !currentToken.is("sfecha_parent"))
-        {
+        if (!currentToken.is("sfecha_parent")) {
             //erro
             return;
         }
@@ -135,7 +115,7 @@ public class Syntactic {
             return;
         }
         read();
-        if (!currentToken.is("sidentificador")){
+        if (!currentToken.is("sidentificador")) {
             //erro
             return;
         }
@@ -152,12 +132,13 @@ public class Syntactic {
         //else erro
 
     }
+
     private static void analyzeIf() {
 
     }
 
 
-        private static void analyzeVariablesStep() {
+    private static void analyzeVariablesStep() {
         if (!currentToken.is("svar")) {
             // erro
             return;
@@ -206,8 +187,7 @@ public class Syntactic {
 
     private static void analyzeType() {
 
-        if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano"))
-        {
+        if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {
             //erro
             return;
         }
