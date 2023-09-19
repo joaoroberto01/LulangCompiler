@@ -43,7 +43,7 @@ public class Lexical {
                 break;
             Token token = getToken();
 
-            //tokenList.add(token);
+            tokenList.add(token);
         }
         System.out.println("\nacabou o semestre");
     }
@@ -61,15 +61,11 @@ public class Lexical {
 
     }
     public static boolean isAlphabetCharacter(char c) {
-        int ascii = (int) c;
-
-        return (ascii >= 65 && ascii <= 90) || (ascii >= 97 && ascii <= 122);
+        return c >= 65 && c <= 90 || c >= 97 && c <= 122;
     }
 
     public static boolean isNumber(char c) {
-        int number = (int)  c;
-
-        return (number >= 48 && number <= 57);
+        return c >= 48 && c <= 57;
     }
 
     private static Token getToken() {
