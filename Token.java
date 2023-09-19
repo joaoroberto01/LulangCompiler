@@ -78,6 +78,11 @@ public class Token {
             return  this.symbol.equals(symbol);
 
     }
+    public Boolean isLexema(String lexeme) {
+
+        return  this.lexeme.equals(lexeme);
+
+    }
 
 
 }
