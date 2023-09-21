@@ -14,12 +14,35 @@ public class Lexical {
     private static final List<Character> RELATIONAL_OPERATORS = Arrays.asList('!', '<', '>', '=');
     private static final List<Token> tokenList = new ArrayList<>();
     private static int currentIndex = -1;
-    private static boolean eof;
+    public static boolean eof;
 
     private static boolean unclosedComment;
 
     private static Character currentChar;
 
+    public static void init() {
+        read();
+    }
+
+    public static void analyze() {
+        init();
+        while (notEof()) {
+            handleCommentsAndWhitespaces();
+            if(unclosedComment || eof)
+                break;
+            Token token = getToken();
+
+            tokenList.add(token);
+        }
+        System.out.println("\nacabou o semestre");
+    }
+
+    public static Token nextToken() {
+        handleCommentsAndWhitespaces();
+        if(unclosedComment || eof)
+            return null;
+        return getToken();
+    }
 
     private static void read() {
         if (eof) return;
@@ -35,36 +58,11 @@ public class Lexical {
         return currentIndex < length;
     }
 
-    public static void analyze() {
-        read();
-        while (notEof()) {
-            handleCommentsAndWhitespaces();
-            if(unclosedComment || eof)
-                break;
-            Token token = getToken();
-
-            tokenList.add(token);
-        }
-        System.out.println("\nacabou o semestre");
-    }
-
-
-    public static Token nextToken() {
-        read();
-
-            handleCommentsAndWhitespaces();
-            if(unclosedComment || eof)
-                return  null;
-            return getToken();
-
-            //tokenList.add(token);
-
-    }
-    public static boolean isAlphabetCharacter(char c) {
+    private static boolean isAlphabetCharacter(char c) {
         return c >= 65 && c <= 90 || c >= 97 && c <= 122;
     }
 
-    public static boolean isNumber(char c) {
+    private static boolean isNumber(char c) {
         return c >= 48 && c <= 57;
     }
 
