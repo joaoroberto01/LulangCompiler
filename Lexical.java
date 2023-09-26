@@ -53,11 +53,12 @@ public class Lexical {
         eof = currentIndex >= length;
 
         if (eof) return;
-        currentChar = sourceCode.charAt(currentIndex);
 
-        if (currentChar == '\n') {
+        if (currentChar != null && currentChar == '\n') {
             lineCount++;
         }
+
+        currentChar = sourceCode.charAt(currentIndex);
     }
 
     private static boolean notEof() {
