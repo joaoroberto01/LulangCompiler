@@ -1,5 +1,6 @@
 public class Syntactic {
 
+    //TODO trocar SOUT's por THROW
     private static Token currentToken;
 
     private static void nextToken() {
@@ -12,24 +13,22 @@ public class Syntactic {
         System.out.println("inicio");
         nextToken();
         if (!currentToken.is("sprograma")) {
-            System.out.println("erro!");
-            return;
+            
+            
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         nextToken();
         if (!currentToken.is("sidentificador")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         //insere_tabela
         nextToken();
         if (!currentToken.is("sponto_virgula")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         analyzeBlock();
         if (!currentToken.is("sponto")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         //sucesso
         System.out.println("AUUUUUUUUUUUUUUUUUUUU");
@@ -42,21 +41,25 @@ public class Syntactic {
         analyzeCommands();
     }
 
+
+
+    //FIXME Não sabemos se a implementação está correta
+    private static void analyzeFunctionCall() {
+        nextToken();
+    }
+
     private static void analyzeFunctionDeclaration() {
         nextToken();
         if (!currentToken.is("sidentificador")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         nextToken();
         if (!currentToken.is("sdoispontos")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         nextToken();
         if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
 
         nextToken();
@@ -67,8 +70,7 @@ public class Syntactic {
 
     private static void analyzeCommands() {
         if (!currentToken.is("sinicio")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         nextToken();
         analyzeSimpleCommand();
@@ -102,16 +104,23 @@ public class Syntactic {
         }
     }
 
+    //FIXME Não sabemos se a implementação está correta
+    private static void analyzeProcedureCall() {
+        if (!currentToken.is("sidentificador")) {
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+        }
+
+        nextToken();
+    }
+
     private static void analyzeProcedureDeclaration() {
         nextToken();
         if (!currentToken.is("sidentificador")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         nextToken();
         if (!currentToken.is("sponto_virgula")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         analyzeBlock();
     }
@@ -119,8 +128,7 @@ public class Syntactic {
 
     private static void analyzeType() {
         if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
 
         //colocatipotabela
@@ -147,8 +155,7 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
         if (!currentToken.is("sfaca")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         nextToken();
         analyzeSimpleCommand();
@@ -206,19 +213,11 @@ public class Syntactic {
         } else if (currentToken.isLexema("verdadeiro") || currentToken.isLexema("falso")) {
             nextToken();
         } else {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
     }
 
-    //TODO JOAO GAMEPLAYS FEZ ISSO. Fonte: Times New Roman 12
-    private static void analyzeFunctionCall() {
-        if (!currentToken.is("sidentificador")) {
-            System.out.println("erro!");
-            return;
-        }
-        nextToken();
-    }
+
 
     private static void analyzeAttribution() {
         // por enquanto colocar analisa expressao mas nao é isso de fato o certo é a Analisa_atribuicao
@@ -228,32 +227,31 @@ public class Syntactic {
     }
 
 
+
+
     private static void analyzeAtribCallProc() {
         nextToken();
         if (currentToken.is("satribuicao")) {
             analyzeAttribution();
         } else {
-            //TODO Chamada_procedimento
+            analyzeProcedureCall();
         }
     }
 
     private static void analyzeRead() {
         nextToken();
         if (!currentToken.is("sabre_parenteses")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         nextToken();
         if (!currentToken.is("sidentificador")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         //if pesquisa
 
         nextToken();
         if (!currentToken.is("sfecha_parenteses")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         nextToken();
     }
@@ -261,20 +259,17 @@ public class Syntactic {
     private static void analyzeWrite() {
         nextToken();
         if (!currentToken.is("sabre_parenteses")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         nextToken();
         if (!currentToken.is("sidentificador")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
         //TODO se pesquisa_ declvarfunc_tabela(token.lexema
 
         nextToken();
         if (!currentToken.is("sfecha_parenteses")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
 
         }
         nextToken();
@@ -287,8 +282,7 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
         if (!currentToken.is("sentao")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
 
         nextToken();
@@ -302,13 +296,13 @@ public class Syntactic {
 
     private static void analyzeVariablesStep() {
         if (!currentToken.is("svar")) {
-            System.out.println("erro!");
             return;
         }
+
         nextToken();
+
         if (!currentToken.is("sidentificador")) {
-            System.out.println("erro!");
-            return;
+            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
         }
 
         while (currentToken.is("sidentificador")) {

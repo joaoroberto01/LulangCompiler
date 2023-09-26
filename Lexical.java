@@ -20,6 +20,8 @@ public class Lexical {
 
     private static Character currentChar;
 
+    public static int lineCount = 1;
+
     public static void init() {
         read();
     }
@@ -52,6 +54,10 @@ public class Lexical {
 
         if (eof) return;
         currentChar = sourceCode.charAt(currentIndex);
+
+        if (currentChar == '\n') {
+            lineCount++;
+        }
     }
 
     private static boolean notEof() {
@@ -174,8 +180,12 @@ public class Lexical {
         return token;
     }
 
+    private static boolean handleWhitespace() {
+        return Character.isWhitespace(currentChar);
+    }
+
     private static void handleCommentsAndWhitespaces() {
-        while ((currentChar == '{' || Character.isWhitespace(currentChar)) && notEof()) {
+        while ((currentChar == '{' || handleWhitespace()) && notEof()) {
             if (currentChar == '{') {
                 while (currentChar != '}' && notEof()) {
                     read();
@@ -187,7 +197,7 @@ public class Lexical {
                 }
                 read(); //- JOAO E MATHEUS ACHAM LEGAM ISSO
             }
-            while (Character.isWhitespace(currentChar) && notEof()) {
+            while (handleWhitespace() && notEof()) {
                 read();
             }
         }
