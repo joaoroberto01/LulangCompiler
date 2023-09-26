@@ -43,7 +43,7 @@ public class Syntactic {
 
 
 
-    //FIXME Não sabemos se a implementação está correta
+    //FIXME Não sabemos se a implementação está correta (NAO ESTA!!!!)
     private static void analyzeFunctionCall() {
         nextToken();
     }
@@ -76,8 +76,7 @@ public class Syntactic {
         analyzeSimpleCommand();
         while (!currentToken.is("sfim")) {
             if (!currentToken.is("sponto_virgula")) {
-                System.out.println("erro!");
-                return;
+                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
             }
             nextToken();
             if (!currentToken.is("sfim")) {
@@ -96,20 +95,15 @@ public class Syntactic {
             }
 
             if (!currentToken.is("sponto_virgula")) {
-                System.out.println("erro!");
-                return;
+                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
             }
 
             nextToken();
         }
     }
 
-    //FIXME Não sabemos se a implementação está correta
+    //FIXME Não sabemos se a implementação está correta (NAO ESTA!!!!)
     private static void analyzeProcedureCall() {
-        if (!currentToken.is("sidentificador")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
-        }
-
         nextToken();
     }
 
@@ -206,8 +200,7 @@ public class Syntactic {
             nextToken();
             analyzeExpression();
             if (!currentToken.is("sfecha_parenteses")) {
-                System.out.println("erro!");
-                return;
+                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
             }
             nextToken();
         } else if (currentToken.isLexema("verdadeiro") || currentToken.isLexema("falso")) {
@@ -234,7 +227,7 @@ public class Syntactic {
         if (currentToken.is("satribuicao")) {
             analyzeAttribution();
         } else {
-            analyzeProcedureCall();
+           // analyzeProcedureCall();
         }
     }
 
@@ -308,8 +301,7 @@ public class Syntactic {
         while (currentToken.is("sidentificador")) {
             analyzeVariables();
             if (!currentToken.is("sponto_virgula")) {
-                System.out.println("erro!");
-                return;
+                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
             }
             nextToken();
         }
@@ -318,22 +310,19 @@ public class Syntactic {
     private static void analyzeVariables() {
         while (!currentToken.is("sdoispontos")) {
             if (!currentToken.is("sidentificador")) {
-                System.out.println("erro!");
-                return;
+                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
             }
 
             nextToken();
 
             if (!currentToken.is("svirgula") && !currentToken.is("sdoispontos")) {
-                System.out.println("erro!");
-                return;
+                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
             }
 
             if (currentToken.is("svirgula")) {
                 nextToken();
                 if (currentToken.is("sdoispontos")) {
-                    System.out.println("erro!");
-                    return;
+                    throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
                 }
             }
         }
