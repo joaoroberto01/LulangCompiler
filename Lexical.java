@@ -50,7 +50,9 @@ public class Lexical {
         columnCounter = currentColumn;
 
         handleCommentsAndWhitespaces();
-        if(unclosedComment || eof)
+        if(unclosedComment)
+            throw new RuntimeException("unclosed comment");
+        if (eof)
             return null;
         return getToken();
     }

@@ -1,10 +1,11 @@
 public class Syntactic {
 
-    //TODO trocar SOUT's por THROW
     private static Token currentToken;
 
     private static void nextToken() {
         currentToken = Lexical.nextToken();
+        if (currentToken == null)
+            throw new CompilerException("unexpected EOF");
     }
 
     public static void analyze() {
@@ -25,7 +26,7 @@ public class Syntactic {
         }
         analyzeBlock();
         if (!currentToken.is("sponto")) {
-            throw new SyntacticException();
+            throw new SyntacticException(".");
         }
         //sucesso
         System.out.println("AUUUUUUUUUUUUUUUUUUUU");
@@ -52,7 +53,7 @@ public class Syntactic {
         }
         nextToken();
         if (!currentToken.is("sdoispontos")) {
-            throw new SyntacticException();
+            throw new SyntacticException(":");
         }
         nextToken();
         if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {

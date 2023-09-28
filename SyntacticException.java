@@ -1,9 +1,11 @@
-public class SyntacticException extends RuntimeException {
+public class SyntacticException extends CompilerException {
     public SyntacticException(String expectedLexeme) {
-        super(String.format("%s:%d:%d\nerror: expected '%s' in declaration\n\n", Lexical.filepath, Lexical.lineCounter, Lexical.columnCounter, expectedLexeme));
+        super(String.format("expected '%s' in declaration", expectedLexeme));
     }
 
     public SyntacticException() {
-        super(String.format("%s:%d:%d\nerror: unexpected token in declaration\n\n", Lexical.filepath, Lexical.lineCounter, Lexical.columnCounter));
+        super("unexpected token in declaration");
     }
+
+
 }
