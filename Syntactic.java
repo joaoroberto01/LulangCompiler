@@ -57,7 +57,7 @@ public class Syntactic {
         }
         nextToken();
         if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {
-            throw new SyntacticException();
+            throw new SyntacticException("tipo");
         }
 
         nextToken();
@@ -68,13 +68,13 @@ public class Syntactic {
 
     private static void analyzeCommands() {
         if (!currentToken.is("sinicio")) {
-            throw new SyntacticException();
+            throw new SyntacticException("inicio");
         }
         nextToken();
         analyzeSimpleCommand();
         while (!currentToken.is("sfim")) {
             if (!currentToken.is("sponto_virgula")) {
-                throw new SyntacticException();
+                throw new SyntacticException(";");
             }
             nextToken();
             if (!currentToken.is("sfim")) {
@@ -112,7 +112,7 @@ public class Syntactic {
         }
         nextToken();
         if (!currentToken.is("sponto_virgula")) {
-            throw new SyntacticException();
+            throw new SyntacticException(";");
         }
         analyzeBlock();
     }
@@ -120,7 +120,7 @@ public class Syntactic {
 
     private static void analyzeType() {
         if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {
-            throw new SyntacticException();
+            throw new SyntacticException("tipo");
         }
 
         //colocatipotabela
@@ -147,7 +147,7 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
         if (!currentToken.is("sfaca")) {
-            throw new SyntacticException();
+            throw new SyntacticException("faca");
         }
         nextToken();
         analyzeSimpleCommand();
@@ -198,7 +198,7 @@ public class Syntactic {
             nextToken();
             analyzeExpression();
             if (!currentToken.is("sfecha_parenteses")) {
-                throw new SyntacticException();
+                throw new SyntacticException(")");
             }
             nextToken();
         } else if (currentToken.isLexema("verdadeiro") || currentToken.isLexema("falso")) {
@@ -232,7 +232,7 @@ public class Syntactic {
     private static void analyzeRead() {
         nextToken();
         if (!currentToken.is("sabre_parenteses")) {
-            throw new SyntacticException();
+            throw new SyntacticException("(");
         }
         nextToken();
         if (!currentToken.is("sidentificador")) {
@@ -242,7 +242,7 @@ public class Syntactic {
 
         nextToken();
         if (!currentToken.is("sfecha_parenteses")) {
-            throw new SyntacticException();
+            throw new SyntacticException(")");
         }
         nextToken();
     }
@@ -260,7 +260,7 @@ public class Syntactic {
 
         nextToken();
         if (!currentToken.is("sfecha_parenteses")) {
-            throw new SyntacticException();
+            throw new SyntacticException(")");
 
         }
         nextToken();
@@ -273,7 +273,7 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
         if (!currentToken.is("sentao")) {
-            throw new SyntacticException();
+            throw new SyntacticException("entao");
         }
 
         nextToken();
@@ -299,7 +299,7 @@ public class Syntactic {
         while (currentToken.is("sidentificador")) {
             analyzeVariables();
             if (!currentToken.is("sponto_virgula")) {
-                throw new SyntacticException();
+                throw new SyntacticException(";");
             }
             nextToken();
         }
@@ -320,7 +320,7 @@ public class Syntactic {
             if (currentToken.is("svirgula")) {
                 nextToken();
                 if (currentToken.is("sdoispontos")) {
-                    throw new SyntacticException();
+                    throw new SyntacticException(":");
                 }
             }
         }
