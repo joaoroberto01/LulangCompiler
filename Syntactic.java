@@ -102,7 +102,7 @@ public class Syntactic {
 
     //FIXME Não sabemos se a implementação está correta (NAO ESTA!!!!)
     private static void analyzeProcedureCall() {
-        nextToken();
+        System.out.println("ANALISANDO CHAMADA DE PROCEDIMENTO");
     }
 
     private static void analyzeProcedureDeclaration() {
@@ -225,7 +225,7 @@ public class Syntactic {
         if (currentToken.is("satribuicao")) {
             analyzeAttribution();
         } else {
-           // analyzeProcedureCall();
+            analyzeProcedureCall();
         }
     }
 
