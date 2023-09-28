@@ -1,0 +1,3 @@
+public enum SymbolType {
+    INTEIRO, BOOLEANO, NAO_DEFINIDO, PROCEDIMENTO;
+}
