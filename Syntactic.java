@@ -10,25 +10,22 @@ public class Syntactic {
     public static void analyze() {
         Lexical.init();
         //rotulo
-        System.out.println("inicio");
         nextToken();
         if (!currentToken.is("sprograma")) {
-            
-            
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException("programa");
         }
         nextToken();
         if (!currentToken.is("sidentificador")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         //insere_tabela
         nextToken();
         if (!currentToken.is("sponto_virgula")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException(";");
         }
         analyzeBlock();
         if (!currentToken.is("sponto")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         //sucesso
         System.out.println("AUUUUUUUUUUUUUUUUUUUU");
@@ -51,15 +48,15 @@ public class Syntactic {
     private static void analyzeFunctionDeclaration() {
         nextToken();
         if (!currentToken.is("sidentificador")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         nextToken();
         if (!currentToken.is("sdoispontos")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         nextToken();
         if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
 
         nextToken();
@@ -70,13 +67,13 @@ public class Syntactic {
 
     private static void analyzeCommands() {
         if (!currentToken.is("sinicio")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         nextToken();
         analyzeSimpleCommand();
         while (!currentToken.is("sfim")) {
             if (!currentToken.is("sponto_virgula")) {
-                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+                throw new SyntacticException();
             }
             nextToken();
             if (!currentToken.is("sfim")) {
@@ -95,7 +92,7 @@ public class Syntactic {
             }
 
             if (!currentToken.is("sponto_virgula")) {
-                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+                throw new SyntacticException(";");
             }
 
             nextToken();
@@ -110,11 +107,11 @@ public class Syntactic {
     private static void analyzeProcedureDeclaration() {
         nextToken();
         if (!currentToken.is("sidentificador")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         nextToken();
         if (!currentToken.is("sponto_virgula")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         analyzeBlock();
     }
@@ -122,7 +119,7 @@ public class Syntactic {
 
     private static void analyzeType() {
         if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
 
         //colocatipotabela
@@ -149,7 +146,7 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
         if (!currentToken.is("sfaca")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         nextToken();
         analyzeSimpleCommand();
@@ -200,13 +197,13 @@ public class Syntactic {
             nextToken();
             analyzeExpression();
             if (!currentToken.is("sfecha_parenteses")) {
-                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+                throw new SyntacticException();
             }
             nextToken();
         } else if (currentToken.isLexema("verdadeiro") || currentToken.isLexema("falso")) {
             nextToken();
         } else {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
     }
 
@@ -234,17 +231,17 @@ public class Syntactic {
     private static void analyzeRead() {
         nextToken();
         if (!currentToken.is("sabre_parenteses")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         nextToken();
         if (!currentToken.is("sidentificador")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         //if pesquisa
 
         nextToken();
         if (!currentToken.is("sfecha_parenteses")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         nextToken();
     }
@@ -252,17 +249,17 @@ public class Syntactic {
     private static void analyzeWrite() {
         nextToken();
         if (!currentToken.is("sabre_parenteses")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         nextToken();
         if (!currentToken.is("sidentificador")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
         //TODO se pesquisa_ declvarfunc_tabela(token.lexema
 
         nextToken();
         if (!currentToken.is("sfecha_parenteses")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
 
         }
         nextToken();
@@ -275,7 +272,7 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
         if (!currentToken.is("sentao")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
 
         nextToken();
@@ -295,13 +292,13 @@ public class Syntactic {
         nextToken();
 
         if (!currentToken.is("sidentificador")) {
-            throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+            throw new SyntacticException();
         }
 
         while (currentToken.is("sidentificador")) {
             analyzeVariables();
             if (!currentToken.is("sponto_virgula")) {
-                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+                throw new SyntacticException();
             }
             nextToken();
         }
@@ -310,19 +307,19 @@ public class Syntactic {
     private static void analyzeVariables() {
         while (!currentToken.is("sdoispontos")) {
             if (!currentToken.is("sidentificador")) {
-                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+                throw new SyntacticException();
             }
 
             nextToken();
 
             if (!currentToken.is("svirgula") && !currentToken.is("sdoispontos")) {
-                throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+                throw new SyntacticException();
             }
 
             if (currentToken.is("svirgula")) {
                 nextToken();
                 if (currentToken.is("sdoispontos")) {
-                    throw new RuntimeException("ERRO NA LINHA: " + Lexical.lineCount);
+                    throw new SyntacticException();
                 }
             }
         }

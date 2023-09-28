@@ -8,19 +8,25 @@ import java.util.Map;
 
 
 public class Lexical {
-    private static final String sourceCode = readFileAsString("source_code.ll");
+    public static final String filepath = "source_code.ll";
+    private static final String sourceCode = readFileAsString(filepath);
     private static final int length = sourceCode.length();
 
     private static final List<Character> RELATIONAL_OPERATORS = Arrays.asList('!', '<', '>', '=');
     private static final List<Token> tokenList = new ArrayList<>();
     private static int currentIndex = -1;
+
+    private static int currentLine = 1;
+    private static int currentColumn = 1;
+
     public static boolean eof;
 
     private static boolean unclosedComment;
 
     private static Character currentChar;
 
-    public static int lineCount = 1;
+    public static int lineCounter = 1;
+    public static int columnCounter = 1;
 
     public static void init() {
         read();
@@ -40,6 +46,9 @@ public class Lexical {
     }
 
     public static Token nextToken() {
+        lineCounter = currentLine;
+        columnCounter = currentColumn;
+
         handleCommentsAndWhitespaces();
         if(unclosedComment || eof)
             return null;
@@ -54,8 +63,10 @@ public class Lexical {
 
         if (eof) return;
 
+        currentColumn++;
         if (currentChar != null && currentChar == '\n') {
-            lineCount++;
+            currentLine++;
+            currentColumn = 1;
         }
 
         currentChar = sourceCode.charAt(currentIndex);
