@@ -2,9 +2,11 @@ public class Syntactic {
 
     private static Token currentToken;
 
+    private static boolean expectedEOF;
+
     private static void nextToken() {
         currentToken = Lexical.nextToken();
-        if (currentToken == null)
+        if (!expectedEOF && currentToken == null)
             throw new CompilerException("unexpected EOF");
     }
 
@@ -28,6 +30,12 @@ public class Syntactic {
         if (!currentToken.is("sponto")) {
             throw new SyntacticException(".");
         }
+        expectedEOF = true;
+        nextToken();
+        if (currentToken != null) {
+            throw new SyntacticException();
+        }
+
         //sucesso
         System.out.println("AUUUUUUUUUUUUUUUUUUUU");
     }
@@ -179,7 +187,7 @@ public class Syntactic {
 
     private static void analyzeTerm() {
         analyzeFactor();
-        while (currentToken.is("smult") || currentToken.is("sdiv") || currentToken.is("sse")) {
+        while (currentToken.is("smult") || currentToken.is("sdiv") || currentToken.is("se")) {
             nextToken();
             analyzeFactor();
         }
@@ -278,7 +286,7 @@ public class Syntactic {
 
         nextToken();
         analyzeSimpleCommand();
-        if (currentToken.is("ssenão")) {
+        if (currentToken.is("ssenao")) {
             nextToken();
             analyzeSimpleCommand();
         }
