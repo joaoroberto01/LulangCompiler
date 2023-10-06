@@ -11,23 +11,23 @@ public class Syntactic {
     }
 
     public static void analyze() {
-        Lexical.init();
+        Lexical.init("source_code.ll");
         //rotulo
         nextToken();
-        if (!currentToken.is("sprograma")) {
+        if (!currentToken.is(Token.SPROGRAMA)) {
             throw new SyntacticException("programa");
         }
         nextToken();
-        if (!currentToken.is("sidentificador")) {
+        if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
         //insere_tabela
         nextToken();
-        if (!currentToken.is("sponto_virgula")) {
+        if (!currentToken.is(Token.SPONTO_VIRGULA)) {
             throw new SyntacticException(";");
         }
         analyzeBlock();
-        if (!currentToken.is("sponto")) {
+        if (!currentToken.is(Token.SPONTO)) {
             throw new SyntacticException(".");
         }
         expectedEOF = true;
@@ -48,7 +48,6 @@ public class Syntactic {
     }
 
 
-
     //FIXME Não sabemos se a implementação está correta (NAO ESTA!!!!)
     private static void analyzeFunctionCall() {
         nextToken();
@@ -56,36 +55,36 @@ public class Syntactic {
 
     private static void analyzeFunctionDeclaration() {
         nextToken();
-        if (!currentToken.is("sidentificador")) {
+        if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
         nextToken();
-        if (!currentToken.is("sdoispontos")) {
+        if (!currentToken.is(Token.SDOISPONTOS)) {
             throw new SyntacticException(":");
         }
         nextToken();
-        if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {
+        if (!currentToken.is(Token.SINTEIRO) && !currentToken.is(Token.SBOOLEANO)) {
             throw new SyntacticException("tipo");
         }
 
         nextToken();
-        if (currentToken.is("sponto_virgula")) {
+        if (currentToken.is(Token.SPONTO_VIRGULA)) {
             analyzeBlock();
         }
     }
 
     private static void analyzeCommands() {
-        if (!currentToken.is("sinicio")) {
+        if (!currentToken.is(Token.SINICIO)) {
             throw new SyntacticException("inicio");
         }
         nextToken();
         analyzeSimpleCommand();
-        while (!currentToken.is("sfim")) {
-            if (!currentToken.is("sponto_virgula")) {
+        while (!currentToken.is(Token.SFIM)) {
+            if (!currentToken.is(Token.SPONTO_VIRGULA)) {
                 throw new SyntacticException(";");
             }
             nextToken();
-            if (!currentToken.is("sfim")) {
+            if (!currentToken.is(Token.SFIM)) {
                 analyzeSimpleCommand();
             }
         }
@@ -93,14 +92,14 @@ public class Syntactic {
     }
 
     private static void analyzeSubRoutine() {
-        while (currentToken.is("sprocedimento") || currentToken.is("sfuncao")) {
-            if (currentToken.is("sprocedimento")) {
+        while (currentToken.is(Token.SPROCEDIMENTO) || currentToken.is(Token.SFUNCAO)) {
+            if (currentToken.is(Token.SPROCEDIMENTO)) {
                 analyzeProcedureDeclaration();
             } else {
-               analyzeFunctionDeclaration();
+                analyzeFunctionDeclaration();
             }
 
-            if (!currentToken.is("sponto_virgula")) {
+            if (!currentToken.is(Token.SPONTO_VIRGULA)) {
                 throw new SyntacticException(";");
             }
 
@@ -115,11 +114,11 @@ public class Syntactic {
 
     private static void analyzeProcedureDeclaration() {
         nextToken();
-        if (!currentToken.is("sidentificador")) {
+        if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
         nextToken();
-        if (!currentToken.is("sponto_virgula")) {
+        if (!currentToken.is(Token.SPONTO_VIRGULA)) {
             throw new SyntacticException(";");
         }
         analyzeBlock();
@@ -127,7 +126,7 @@ public class Syntactic {
 
 
     private static void analyzeType() {
-        if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {
+        if (!currentToken.is(Token.SINTEIRO) && !currentToken.is(Token.SBOOLEANO)) {
             throw new SyntacticException("tipo");
         }
 
@@ -136,15 +135,15 @@ public class Syntactic {
     }
 
     private static void analyzeSimpleCommand() {
-        if (currentToken.is("sidentificador")) {
+        if (currentToken.is(Token.SIDENTIFICADOR)) {
             analyzeAtribCallProc();
-        } else if (currentToken.is("sse")) {
+        } else if (currentToken.is(Token.SSE)) {
             analyzeIf();
-        } else if (currentToken.is("senquanto")) {
+        } else if (currentToken.is(Token.SENQUANTO)) {
             analyzeWhile();
-        } else if (currentToken.is("sleia")) {
+        } else if (currentToken.is(Token.SLEIA)) {
             analyzeRead();
-        } else if (currentToken.is("sescreva")) {
+        } else if (currentToken.is(Token.SESCREVA)) {
             analyzeWrite();
         } else {
             analyzeCommands();
@@ -154,7 +153,7 @@ public class Syntactic {
     private static void analyzeWhile() {
         nextToken();
         analyzeExpression();
-        if (!currentToken.is("sfaca")) {
+        if (!currentToken.is(Token.SFACA)) {
             throw new SyntacticException("faca");
         }
         nextToken();
@@ -163,23 +162,20 @@ public class Syntactic {
 
     private static void analyzeExpression() {
         analyzeSimpleExpression();
-        if (currentToken.is("smaior")
-                || currentToken.is("smaiorig")
-                || currentToken.is("sig")
-                || currentToken.is("smenor")
-                || currentToken.is("smenorig")
-                || currentToken.is("sdif")) {
+        if (currentToken.is(Token.SMAIOR) || currentToken.is(Token.SMAIORIG) || currentToken.is(Token.SIG)
+                || currentToken.is(Token.SMENOR) || currentToken.is(Token.SMENORIG)
+                || currentToken.is(Token.SDIF)) {
             nextToken();
             analyzeSimpleExpression();
         }
     }
 
     private static void analyzeSimpleExpression() {
-        if (currentToken.is("smais") || currentToken.is("smenos")) {
+        if (currentToken.is(Token.SMAIS) || currentToken.is(Token.SMENOS)) {
             nextToken();
         }
         analyzeTerm();
-        while (currentToken.is("smais") || currentToken.is("smenos") || currentToken.is("sou")) {
+        while (currentToken.is(Token.SMAIS) || currentToken.is(Token.SMENOS) || currentToken.is(Token.SOU)) {
             nextToken();
             analyzeTerm();
         }
@@ -187,35 +183,34 @@ public class Syntactic {
 
     private static void analyzeTerm() {
         analyzeFactor();
-        while (currentToken.is("smult") || currentToken.is("sdiv") || currentToken.is("se")) {
+        while (currentToken.is(Token.SMULT) || currentToken.is(Token.SDIV) || currentToken.is(Token.SE)) {
             nextToken();
             analyzeFactor();
         }
     }
 
     private static void analyzeFactor() {
-        if (currentToken.is("sidentificador")) {
+        if (currentToken.is(Token.SIDENTIFICADOR)) {
             //TODO if pesquisa tabela
             analyzeFunctionCall();
-        } else if (currentToken.is("snumero")) {
+        } else if (currentToken.is(Token.SNUMERO)) {
             nextToken();
-        } else if (currentToken.is("snao")) {
+        } else if (currentToken.is(Token.SNAO)) {
             nextToken();
             analyzeFactor();
-        } else if (currentToken.is("sabre_parenteses")) {
+        } else if (currentToken.is(Token.SABRE_PARENTESES)) {
             nextToken();
             analyzeExpression();
-            if (!currentToken.is("sfecha_parenteses")) {
+            if (!currentToken.is(Token.SFECHA_PARENTESES)) {
                 throw new SyntacticException(")");
             }
             nextToken();
-        } else if (currentToken.isLexema("verdadeiro") || currentToken.isLexema("falso")) {
+        } else if (currentToken.is(Token.SVERDADEIRO) || currentToken.is(Token.SFALSO)) {
             nextToken();
         } else {
             throw new SyntacticException();
         }
     }
-
 
 
     private static void analyzeAttribution() {
@@ -226,11 +221,9 @@ public class Syntactic {
     }
 
 
-
-
     private static void analyzeAtribCallProc() {
         nextToken();
-        if (currentToken.is("satribuicao")) {
+        if (currentToken.is(Token.SATRIBUICAO)) {
             analyzeAttribution();
         } else {
             analyzeProcedureCall();
@@ -239,17 +232,17 @@ public class Syntactic {
 
     private static void analyzeRead() {
         nextToken();
-        if (!currentToken.is("sabre_parenteses")) {
+        if (!currentToken.is(Token.SABRE_PARENTESES)) {
             throw new SyntacticException("(");
         }
         nextToken();
-        if (!currentToken.is("sidentificador")) {
+        if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
         //if pesquisa
 
         nextToken();
-        if (!currentToken.is("sfecha_parenteses")) {
+        if (!currentToken.is(Token.SFECHA_PARENTESES)) {
             throw new SyntacticException(")");
         }
         nextToken();
@@ -257,17 +250,17 @@ public class Syntactic {
 
     private static void analyzeWrite() {
         nextToken();
-        if (!currentToken.is("sabre_parenteses")) {
+        if (!currentToken.is(Token.SABRE_PARENTESES)) {
             throw new SyntacticException();
         }
         nextToken();
-        if (!currentToken.is("sidentificador")) {
+        if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
         //TODO se pesquisa_ declvarfunc_tabela(token.lexema
 
         nextToken();
-        if (!currentToken.is("sfecha_parenteses")) {
+        if (!currentToken.is(Token.SFECHA_PARENTESES)) {
             throw new SyntacticException(")");
 
         }
@@ -280,13 +273,13 @@ public class Syntactic {
     private static void analyzeIf() {
         nextToken();
         analyzeExpression();
-        if (!currentToken.is("sentao")) {
+        if (!currentToken.is(Token.SENTAO)) {
             throw new SyntacticException("entao");
         }
 
         nextToken();
         analyzeSimpleCommand();
-        if (currentToken.is("ssenao")) {
+        if (currentToken.is(Token.SSENAO)) {
             nextToken();
             analyzeSimpleCommand();
         }
@@ -294,19 +287,19 @@ public class Syntactic {
 
 
     private static void analyzeVariablesStep() {
-        if (!currentToken.is("svar")) {
+        if (!currentToken.is(Token.SVAR)) {
             return;
         }
 
         nextToken();
 
-        if (!currentToken.is("sidentificador")) {
+        if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
 
-        while (currentToken.is("sidentificador")) {
+        while (currentToken.is(Token.SIDENTIFICADOR)) {
             analyzeVariables();
-            if (!currentToken.is("sponto_virgula")) {
+            if (!currentToken.is(Token.SPONTO_VIRGULA)) {
                 throw new SyntacticException(";");
             }
             nextToken();
@@ -314,20 +307,20 @@ public class Syntactic {
     }
 
     private static void analyzeVariables() {
-        while (!currentToken.is("sdoispontos")) {
-            if (!currentToken.is("sidentificador")) {
+        while (!currentToken.is(Token.SDOISPONTOS)) {
+            if (!currentToken.is(Token.SIDENTIFICADOR)) {
                 throw new SyntacticException();
             }
 
             nextToken();
 
-            if (!currentToken.is("svirgula") && !currentToken.is("sdoispontos")) {
+            if (!currentToken.is(Token.SVIRGULA) && !currentToken.is(Token.SDOISPONTOS)) {
                 throw new SyntacticException();
             }
 
-            if (currentToken.is("svirgula")) {
+            if (currentToken.is(Token.SVIRGULA)) {
                 nextToken();
-                if (currentToken.is("sdoispontos")) {
+                if (currentToken.is(Token.SDOISPONTOS)) {
                     throw new SyntacticException(":");
                 }
             }

@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -8,9 +9,9 @@ import java.util.Map;
 
 
 public class Lexical {
-    public static final String filepath = "source_code.ll";
-    private static final String sourceCode = readFileAsString(filepath);
-    private static final int length = sourceCode.length();
+    public static String filename;
+    private static String sourceCode;
+    private static int length;
 
     private static final List<Character> RELATIONAL_OPERATORS = Arrays.asList('!', '<', '>', '=');
     private static final List<Token> tokenList = new ArrayList<>();
@@ -28,12 +29,17 @@ public class Lexical {
     public static int lineCounter = 1;
     public static int columnCounter = 1;
 
-    public static void init() {
+    public static void init(String filepath) {
+        File file = new File(filepath);
+        filename = file.getName();
+        sourceCode = readFileAsString(filepath);
+        length = sourceCode.length();
+
         read();
     }
 
     public static void analyze() {
-        init();
+        init("source_code.ll");
         while (notEof()) {
             handleCommentsAndWhitespaces();
             if(unclosedComment || eof)
@@ -101,9 +107,7 @@ public class Lexical {
             return handlePunctuation();
         }
 
-        Token errorToken = new Token("serro", currentChar.toString());
-        read();
-        return errorToken;
+        throw new CompilerException(String.format("unrecognized symbol '%c'", currentChar));
     }
 
     private static Token handleDigit() {
@@ -115,7 +119,7 @@ public class Lexical {
             read();
         }
 
-        return new Token("snumero", number.toString());
+        return new Token(Token.SNUMERO, number.toString());
     }
 
     private static Token handleRelationalOperators() {
@@ -125,31 +129,31 @@ public class Lexical {
             case '>' -> {
                 read();
                 if (currentChar == '=') {
-                    token = new Token("smaiorig", ">=");
+                    token = new Token(Token.SMAIORIG, ">=");
                 } else {
-                    return new Token("smaior", ">");
+                    return new Token(Token.SMAIOR, ">");
                 }
             }
             case '<' -> {
                 read();
                 if (currentChar == '=') {
-                    token = new Token("smenorig", "<=");
+                    token = new Token(Token.SMENORIG, "<=");
                 } else {
-                    return new Token("smenor", "<");
+                    return new Token(Token.SMENOR, "<");
                 }
             }
             case '!' -> {
                 read();
                 if (currentChar == '=') {
-                    token = new Token("sdif", "!=");
+                    token = new Token(Token.SDIF, "!=");
                 } else {
-                    return new Token("serro", "!");
+                    throw new CompilerException("unrecognized symbol '!'");
                 }
             }
 
-            case '=' -> token = new Token("sig", "=");
+            case '=' -> token = new Token(Token.SIG, "=");
         }
-        read(); //Leitura em caso de simbolo composto
+        read();
 
         return token;
 
@@ -167,10 +171,10 @@ public class Lexical {
         read();
         if (currentChar == '=') {
             read();
-            return new Token("satribuicao",":=");
+            return new Token(Token.SATRIBUICAO,":=");
         }
 
-        return new Token("sdoispontos",":");
+        return new Token(Token.SDOISPONTOS,":");
     }
 
     private static Token handleIdentifierAndReservedWord() {
@@ -182,7 +186,7 @@ public class Lexical {
             read();
         }
 
-        String symbol = Token.RESERVED_SYMBOLS.getOrDefault(identifier.toString(), "sidentificador");
+        String symbol = Token.RESERVED_SYMBOLS.getOrDefault(identifier.toString(), Token.SIDENTIFICADOR);
 
         return new Token(symbol, identifier.toString());
     }
@@ -204,12 +208,10 @@ public class Lexical {
                 while (currentChar != '}' && notEof()) {
                     read();
                     if (eof) {
-                        tokenList.add(new Token("serro_comentario", "falta}"));
-                        unclosedComment = true;
-                        return;
+                        throw new CompilerException("unclosed comment. missing '}'");
                     }
                 }
-                read(); //- JOAO E MATHEUS ACHAM LEGAM ISSO
+                read();
             }
             while (handleWhitespace() && notEof()) {
                 read();
