@@ -22,6 +22,7 @@ public class Syntactic {
             throw new SyntacticException();
         }
         //insere_tabela
+
         nextToken();
         if (!currentToken.is("sponto_virgula")) {
             throw new SyntacticException(";");
@@ -56,9 +57,14 @@ public class Syntactic {
 
     private static void analyzeFunctionDeclaration() {
         nextToken();
+        //nível := “L” (marca ou novo galho)
         if (!currentToken.is("sidentificador")) {
             throw new SyntacticException();
         }
+//        pesquisa_declfunc_tabela(token.lexema)
+//        se não encontrou
+//        então início
+//        Insere_tabela(token.lexema,””,nível,rótulo)
         nextToken();
         if (!currentToken.is("sdoispontos")) {
             throw new SyntacticException(":");
@@ -67,11 +73,18 @@ public class Syntactic {
         if (!currentToken.is("sinteiro") && !currentToken.is("sbooleano")) {
             throw new SyntacticException("tipo");
         }
+//        se (token.símbolo = Sinteger)
+//        então TABSIMB[pc].tipo:=
+//          “função inteiro”
+//        senão TABSIMB[pc].tipo:=
+//          “função booleana”
 
         nextToken();
         if (currentToken.is("sponto_virgula")) {
             analyzeBlock();
         }
+
+        //DESEMPILHA OU VOLTA NÍVEL
     }
 
     private static void analyzeCommands() {
@@ -115,14 +128,20 @@ public class Syntactic {
 
     private static void analyzeProcedureDeclaration() {
         nextToken();
+        //nível := “L” (marca ou novo galho)
         if (!currentToken.is("sidentificador")) {
             throw new SyntacticException();
         }
+//        pesquisa_declproc_tabela(token.lexema)
+//        se não encontrou
+//        então início
+//        Insere_tabela(token.lexema,”procedimento”,nível, rótulo)
         nextToken();
         if (!currentToken.is("sponto_virgula")) {
             throw new SyntacticException(";");
         }
         analyzeBlock();
+        //DESEMPILHA OU VOLTA NÍVEL
     }
 
 
@@ -131,7 +150,7 @@ public class Syntactic {
             throw new SyntacticException("tipo");
         }
 
-        //colocatipotabela
+        //coloca_tipo_tabela
         nextToken();
     }
 
@@ -195,7 +214,9 @@ public class Syntactic {
 
     private static void analyzeFactor() {
         if (currentToken.is("sidentificador")) {
-            //TODO if pesquisa tabela
+            //Se pesquisa_tabela(token.lexema,nível,ind)
+            //Então Se (TabSimb[ind].tipo = “função inteiro”) ou
+            //(TabSimb[ind].tipo = “função booleano”)
             analyzeFunctionCall();
         } else if (currentToken.is("snumero")) {
             nextToken();
@@ -246,7 +267,7 @@ public class Syntactic {
         if (!currentToken.is("sidentificador")) {
             throw new SyntacticException();
         }
-        //if pesquisa
+        //se pesquisa_declvar_tabela(token.lexema)
 
         nextToken();
         if (!currentToken.is("sfecha_parenteses")) {
@@ -264,7 +285,7 @@ public class Syntactic {
         if (!currentToken.is("sidentificador")) {
             throw new SyntacticException();
         }
-        //TODO se pesquisa_ declvarfunc_tabela(token.lexema
+        //TODO pesquisa_ declvarfunc_tabela(token.lexema
 
         nextToken();
         if (!currentToken.is("sfecha_parenteses")) {
@@ -318,7 +339,10 @@ public class Syntactic {
             if (!currentToken.is("sidentificador")) {
                 throw new SyntacticException();
             }
-
+            //Pesquisa_duplicvar_ tabela(token.lexema)
+            //se não encontrou duplicidade
+            //então início
+            //insere_tabela(token.lexema, “variável” ,””,””)
             nextToken();
 
             if (!currentToken.is("svirgula") && !currentToken.is("sdoispontos")) {
