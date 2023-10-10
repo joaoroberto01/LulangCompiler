@@ -182,7 +182,7 @@ public class Lexical {
 
         read();
         while ((isAlphabetCharacter(currentChar) || isNumber(currentChar) || currentChar == '_') && notEof()) {
-            identifier.append(currentChar.toString());
+            identifier.append(currentChar);
             read();
         }
 

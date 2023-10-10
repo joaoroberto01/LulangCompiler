@@ -122,7 +122,7 @@ public class Syntactic {
 
     //FIXME Não sabemos se a implementação está correta (NAO ESTA!!!!)
     private static void analyzeProcedureCall() {
-        System.out.println("ANALISANDO CHAMADA DE PROCEDIMENTO");
+
     }
 
     private static void analyzeProcedureDeclaration() {
@@ -215,6 +215,7 @@ public class Syntactic {
             //Se pesquisa_tabela(token.lexema,nível,ind)
             //Então Se (TabSimb[ind].tipo = “função inteiro”) ou
             //(TabSimb[ind].tipo = “função booleano”)
+            //TODO sera que a função abaixo abrange a regra <variavel> do nao terminal <fator> ? aguarde os proximos capitulos...
             analyzeFunctionCall();
         } else if (currentToken.is(Token.SNUMERO)) {
             nextToken();
