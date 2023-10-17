@@ -1,8 +1,13 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Syntactic {
 
     private static Token currentToken;
 
     private static boolean expectedEOF;
+
+    public static List<String> exp = new ArrayList<>();
 
     private static void nextToken() {
         currentToken = Lexical.nextToken();
@@ -173,6 +178,10 @@ public class Syntactic {
     private static void analyzeWhile() {
         nextToken();
         analyzeExpression();
+        //TODO ?
+        PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+        //TODO semantica(pos_fixa)
+
         if (!currentToken.is(Token.SFACA)) {
             throw new SyntacticException("faca");
         }
@@ -225,6 +234,9 @@ public class Syntactic {
         } else if (currentToken.is(Token.SABRE_PARENTESES)) {
             nextToken();
             analyzeExpression();
+            //TODO ?
+            PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+            //TODO semantica(pos_fixa)
             if (!currentToken.is(Token.SFECHA_PARENTESES)) {
                 throw new SyntacticException(")");
             }
@@ -241,6 +253,9 @@ public class Syntactic {
         // por enquanto colocar analisa expressao mas nao é isso de fato o certo é a Analisa_atribuicao
         nextToken();
         analyzeExpression();
+        //TODO ?
+        PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+        //TODO semantica(pos_fixa)
 
     }
 
@@ -297,6 +312,9 @@ public class Syntactic {
     private static void analyzeIf() {
         nextToken();
         analyzeExpression();
+        //TODO ?
+        PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+        //TODO semantica(pos_fixa)
         if (!currentToken.is(Token.SENTAO)) {
             throw new SyntacticException("entao");
         }
