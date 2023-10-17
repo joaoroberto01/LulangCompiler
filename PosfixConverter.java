@@ -1,3 +1,4 @@
+import java.beans.Expression;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -5,7 +6,7 @@ import java.util.Stack;
 
 public class PosfixConverter {
     public static String infixToPostfix(List<String> expressionList) {
-        expressionList = Arrays.stream("( x + 7 * 5 div ( 30 + y ) <= ( x * a + 2 ) ) e ( z > 0 )".split(" ")).toList();
+     //   expressionList = Arrays.stream("( x + 7 * 5 div ( 30 + y ) <= ( x * a + 2 ) ) e ( z > 0 )".split(" ")).toList();
         StringBuilder postfix = new StringBuilder();
         Stack<String> stack = new Stack<>();
 
@@ -38,7 +39,7 @@ public class PosfixConverter {
         while (!stack.isEmpty()) {
             postfix.append(stack.pop());
         }
-
+        expressionList.clear();
         return postfix.toString();
     }
 

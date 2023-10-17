@@ -2,8 +2,8 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 public class Token {
-    private final String symbol;
-    private final String lexeme;
+    public final String symbol;
+    public final String lexeme;
 
     public Token(String symbol, String lexeme) {
         this.symbol = symbol;

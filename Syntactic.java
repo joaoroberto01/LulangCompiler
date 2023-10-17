@@ -16,7 +16,7 @@ public class Syntactic {
     }
 
     public static void analyze() {
-        Lexical.init("source_code.ll");
+        Lexical.init("sint1.txt");
         //rotulo
         nextToken();
         if (!currentToken.is(Token.SPROGRAMA)) {
@@ -56,6 +56,8 @@ public class Syntactic {
 
     //FIXME Não sabemos se a implementação está correta (NAO ESTA!!!!)
     private static void analyzeFunctionCall() {
+        exp.add(currentToken.lexeme);
+
         nextToken();
     }
 
@@ -174,12 +176,12 @@ public class Syntactic {
             analyzeCommands();
         }
     }
-
     private static void analyzeWhile() {
         nextToken();
         analyzeExpression();
         //TODO ?
         PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+
         //TODO semantica(pos_fixa)
 
         if (!currentToken.is(Token.SFACA)) {
@@ -194,18 +196,28 @@ public class Syntactic {
         if (currentToken.is(Token.SMAIOR) || currentToken.is(Token.SMAIORIG) || currentToken.is(Token.SIG)
                 || currentToken.is(Token.SMENOR) || currentToken.is(Token.SMENORIG)
                 || currentToken.is(Token.SDIF)) {
+            exp.add(currentToken.lexeme);
+
             nextToken();
+             
+
             analyzeSimpleExpression();
         }
     }
 
     private static void analyzeSimpleExpression() {
+
         if (currentToken.is(Token.SMAIS) || currentToken.is(Token.SMENOS)) {
+            exp.add(currentToken.lexeme);
             nextToken();
         }
         analyzeTerm();
         while (currentToken.is(Token.SMAIS) || currentToken.is(Token.SMENOS) || currentToken.is(Token.SOU)) {
+            exp.add(currentToken.lexeme);
+
             nextToken();
+             
+
             analyzeTerm();
         }
     }
@@ -213,6 +225,7 @@ public class Syntactic {
     private static void analyzeTerm() {
         analyzeFactor();
         while (currentToken.is(Token.SMULT) || currentToken.is(Token.SDIV) || currentToken.is(Token.SE)) {
+            exp.add(currentToken.lexeme);
             nextToken();
             analyzeFactor();
         }
@@ -225,24 +238,43 @@ public class Syntactic {
             //Então Se (TabSimb[ind].tipo = “função inteiro”) ou
             //(TabSimb[ind].tipo = “função booleano”)
             //TODO sera que a função abaixo abrange a regra <variavel> do nao terminal <fator> ? aguarde os proximos capitulos...
+
             analyzeFunctionCall();
         } else if (currentToken.is(Token.SNUMERO)) {
+            exp.add(currentToken.lexeme);
+
             nextToken();
+
         } else if (currentToken.is(Token.SNAO)) {
+            exp.add(currentToken.lexeme);
+
             nextToken();
+             
+
             analyzeFactor();
         } else if (currentToken.is(Token.SABRE_PARENTESES)) {
+            exp.add(currentToken.lexeme);
+
             nextToken();
+             
+
             analyzeExpression();
-            //TODO ?
-            PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
-            //TODO semantica(pos_fixa)
+
             if (!currentToken.is(Token.SFECHA_PARENTESES)) {
                 throw new SyntacticException(")");
             }
+            exp.add(currentToken.lexeme);
+            //TODO ?
+            //PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+            //TODO semantica(pos_fixa)
             nextToken();
+             
+
         } else if (currentToken.is(Token.SVERDADEIRO) || currentToken.is(Token.SFALSO)) {
+            exp.add(currentToken.lexeme);
             nextToken();
+             
+
         } else {
             throw new SyntacticException();
         }
