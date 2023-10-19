@@ -1,7 +1,7 @@
 public class Symbol {
     private String identifier;
     private SymbolType type;
-    private Boolean localScope;
+    private Boolean localScope = false;
 
 
     public Symbol(String identifier, SymbolType type, Boolean localScope) {
@@ -13,6 +13,10 @@ public class Symbol {
     public Symbol(String identifier, SymbolType type) {
         this.identifier = identifier;
         this.type = type;
+    }
+    public Symbol(String identifier) {
+        this.identifier = identifier;
+
     }
 
     public String getIdentifier() {
@@ -47,5 +51,10 @@ public class Symbol {
     @Override
     public boolean equals(Object obj) {
         return this.hashCode() == obj.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{%s | %s | %s }", identifier, type, localScope );
     }
 }

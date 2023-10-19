@@ -9,6 +9,7 @@ public class Syntactic {
 
     public static List<String> exp = new ArrayList<>();
 
+
     private static void nextToken() {
         currentToken = Lexical.nextToken();
         if (!expectedEOF && currentToken == null)
@@ -26,7 +27,7 @@ public class Syntactic {
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
-        //insere_tabela
+        SymbolTable.insertSymbol(new Symbol(currentToken.lexeme, SymbolType.NOMEDEPROGRAMA));
 
         nextToken();
         if (!currentToken.is(Token.SPONTO_VIRGULA)) {
@@ -63,14 +64,17 @@ public class Syntactic {
 
     private static void analyzeFunctionDeclaration() {
         nextToken();
-        //nível := “L” (marca ou novo galho)
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
-//        pesquisa_declfunc_tabela(token.lexema)
-//        se não encontrou
-//        então início
-//        Insere_tabela(token.lexema,””,nível,rótulo)
+
+
+        if(SymbolTable.searchDeclarationFuncTable(currentToken.lexeme))
+        {
+            throw new CompilerException("function already declared");
+        }
+        Symbol insertedSymbol = SymbolTable.insertSymbol(currentToken);
+
         nextToken();
         if (!currentToken.is(Token.SDOISPONTOS)) {
             throw new SyntacticException(":");
@@ -79,18 +83,19 @@ public class Syntactic {
         if (!currentToken.is(Token.SINTEIRO) && !currentToken.is(Token.SBOOLEANO)) {
             throw new SyntacticException("tipo");
         }
-//        se (token.símbolo = Sinteger)
-//        então TABSIMB[pc].tipo:=
-//          “função inteiro”
-//        senão TABSIMB[pc].tipo:=
-//          “função booleana”
+
+        if (currentToken.is(Token.SINTEIRO)) {
+            insertedSymbol.setType(SymbolType.FUNCAOINTEIRO);
+        } else if (currentToken.is(Token.SBOOLEANO)) {
+            insertedSymbol.setType(SymbolType.FUNCAOBOOLEANO);
+        }
 
         nextToken();
         if (currentToken.is(Token.SPONTO_VIRGULA)) {
             analyzeBlock();
         }
 
-        //DESEMPILHA OU VOLTA NÍVEL
+        SymbolTable.popUntilLocalScope();
     }
 
     private static void analyzeCommands() {
@@ -133,22 +138,28 @@ public class Syntactic {
     }
 
     private static void analyzeProcedureDeclaration() {
+
+
         nextToken();
 
-        //nível := “L” (marca ou novo galho)
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
-//        pesquisa_declproc_tabela(token.lexema)
-//        se não encontrou
-//        então início
-//        Insere_tabela(token.lexema,”procedimento”,nível, rótulo)
+
+
+        if (SymbolTable.searchDeclarationProcTable(currentToken.lexeme)) {
+            throw new CompilerException("procedure already declared");
+        }
+        SymbolTable.insertSymbol(new Symbol(currentToken.lexeme, SymbolType.PROCEDIMENTO, true));
+
         nextToken();
         if (!currentToken.is(Token.SPONTO_VIRGULA)) {
             throw new SyntacticException(";");
         }
         analyzeBlock();
-        //DESEMPILHA OU VOLTA NÍVEL
+
+        SymbolTable.popUntilLocalScope();
+
     }
 
 
@@ -157,7 +168,7 @@ public class Syntactic {
             throw new SyntacticException("tipo");
         }
 
-        //coloca_tipo_tabela
+        SymbolTable.putTypeTable(currentToken);
         nextToken();
     }
 
@@ -176,6 +187,7 @@ public class Syntactic {
             analyzeCommands();
         }
     }
+
     private static void analyzeWhile() {
         nextToken();
         analyzeExpression();
@@ -199,7 +211,7 @@ public class Syntactic {
             exp.add(currentToken.lexeme);
 
             nextToken();
-             
+
 
             analyzeSimpleExpression();
         }
@@ -216,7 +228,7 @@ public class Syntactic {
             exp.add(currentToken.lexeme);
 
             nextToken();
-             
+
 
             analyzeTerm();
         }
@@ -233,13 +245,25 @@ public class Syntactic {
 
     private static void analyzeFactor() {
         if (currentToken.is(Token.SIDENTIFICADOR)) {
-            //TODO if pesquisa tabela
-            //Se pesquisa_tabela(token.lexema,nível,ind)
-            //Então Se (TabSimb[ind].tipo = “função inteiro”) ou
-            //(TabSimb[ind].tipo = “função booleano”)
+
+            int index = SymbolTable.searchTable(currentToken.lexeme);
+
+            if (index == -1) {
+                throw new CompilerException("function " + currentToken.lexeme + " not declared");
+            }
+            SymbolType type = SymbolTable.getSymbol(index).getType();
+            if (type.equals(SymbolType.FUNCAOINTEIRO)
+                    || type.equals(SymbolType.FUNCAOBOOLEANO)) {
+                analyzeFunctionCall();
+
+            } else {
+                nextToken();
+            }
+
+
             //TODO sera que a função abaixo abrange a regra <variavel> do nao terminal <fator> ? aguarde os proximos capitulos...
 
-            analyzeFunctionCall();
+
         } else if (currentToken.is(Token.SNUMERO)) {
             exp.add(currentToken.lexeme);
 
@@ -249,14 +273,14 @@ public class Syntactic {
             exp.add(currentToken.lexeme);
 
             nextToken();
-             
+
 
             analyzeFactor();
         } else if (currentToken.is(Token.SABRE_PARENTESES)) {
             exp.add(currentToken.lexeme);
 
             nextToken();
-             
+
 
             analyzeExpression();
 
@@ -268,12 +292,12 @@ public class Syntactic {
             //PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
             //TODO semantica(pos_fixa)
             nextToken();
-             
+
 
         } else if (currentToken.is(Token.SVERDADEIRO) || currentToken.is(Token.SFALSO)) {
             exp.add(currentToken.lexeme);
             nextToken();
-             
+
 
         } else {
             throw new SyntacticException();
@@ -293,7 +317,14 @@ public class Syntactic {
 
 
     private static void analyzeAtribCallProc() {
+        String lexeme = currentToken.lexeme;
+
         nextToken();
+        if(SymbolTable.searchTable(lexeme) == -1)
+        {
+            throw  new CompilerException("symbol not declared");
+        }
+
         if (currentToken.is(Token.SATRIBUICAO)) {
             analyzeAttribution();
         } else {
@@ -310,7 +341,10 @@ public class Syntactic {
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
-        //se pesquisa_declvar_tabela(token.lexema)
+
+        if (!SymbolTable.searchDeclarationVarTable(currentToken.lexeme)) {
+            throw new CompilerException("variable not found");
+        }
 
         nextToken();
         if (!currentToken.is(Token.SFECHA_PARENTESES)) {
@@ -328,17 +362,15 @@ public class Syntactic {
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
-        //TODO pesquisa_ declvarfunc_tabela(token.lexema
 
+        if (!SymbolTable.searchDeclarationVarOrFuncTable(currentToken.lexeme)) {
+            throw new CompilerException("variable or function not found ");
+        }
         nextToken();
         if (!currentToken.is(Token.SFECHA_PARENTESES)) {
             throw new SyntacticException(")");
-
         }
         nextToken();
-
-        //else erro
-
     }
 
     private static void analyzeIf() {
@@ -385,10 +417,13 @@ public class Syntactic {
             if (!currentToken.is(Token.SIDENTIFICADOR)) {
                 throw new SyntacticException();
             }
-            //Pesquisa_duplicvar_ tabela(token.lexema)
-            //se não encontrou duplicidade
-            //então início
-            //insere_tabela(token.lexema, “variável” ,””,””)
+
+            if(SymbolTable.searchDuplicityVarTable(currentToken.lexeme))
+            {
+                throw new CompilerException("variable already declared");
+            }
+            SymbolTable.insertSymbol(currentToken);
+
             nextToken();
 
             if (!currentToken.is(Token.SVIRGULA) && !currentToken.is(Token.SDOISPONTOS)) {
