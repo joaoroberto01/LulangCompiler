@@ -7,7 +7,7 @@ public class Syntactic {
 
     private static boolean expectedEOF;
 
-    public static List<String> exp = new ArrayList<>();
+    public static List<Token> exp = new ArrayList<>();
 
 
     private static void nextToken() {
@@ -57,7 +57,7 @@ public class Syntactic {
 
     //FIXME Não sabemos se a implementação está correta (NAO ESTA!!!!)
     private static void analyzeFunctionCall() {
-        exp.add(currentToken.lexeme);
+        exp.add(currentToken);
 
         nextToken();
     }
@@ -208,7 +208,7 @@ public class Syntactic {
         if (currentToken.is(Token.SMAIOR) || currentToken.is(Token.SMAIORIG) || currentToken.is(Token.SIG)
                 || currentToken.is(Token.SMENOR) || currentToken.is(Token.SMENORIG)
                 || currentToken.is(Token.SDIF)) {
-            exp.add(currentToken.lexeme);
+            exp.add(currentToken);
 
             nextToken();
 
@@ -220,12 +220,12 @@ public class Syntactic {
     private static void analyzeSimpleExpression() {
 
         if (currentToken.is(Token.SMAIS) || currentToken.is(Token.SMENOS)) {
-            exp.add(currentToken.lexeme);
+            exp.add(currentToken);
             nextToken();
         }
         analyzeTerm();
         while (currentToken.is(Token.SMAIS) || currentToken.is(Token.SMENOS) || currentToken.is(Token.SOU)) {
-            exp.add(currentToken.lexeme);
+            exp.add(currentToken);
 
             nextToken();
 
@@ -237,7 +237,7 @@ public class Syntactic {
     private static void analyzeTerm() {
         analyzeFactor();
         while (currentToken.is(Token.SMULT) || currentToken.is(Token.SDIV) || currentToken.is(Token.SE)) {
-            exp.add(currentToken.lexeme);
+            exp.add(currentToken);
             nextToken();
             analyzeFactor();
         }
@@ -256,6 +256,9 @@ public class Syntactic {
                     || type.equals(SymbolType.FUNCAOBOOLEANO)) {
                 analyzeFunctionCall();
 
+            } else if (type.equals(SymbolType.VARIAVELINTEIRO) || type.equals(SymbolType.VARIAVELBOOLEANO)) {
+                exp.add(currentToken);
+                nextToken();
             } else {
                 nextToken();
             }
@@ -265,19 +268,19 @@ public class Syntactic {
 
 
         } else if (currentToken.is(Token.SNUMERO)) {
-            exp.add(currentToken.lexeme);
+            exp.add(currentToken);
 
             nextToken();
 
         } else if (currentToken.is(Token.SNAO)) {
-            exp.add(currentToken.lexeme);
+            exp.add(currentToken);
 
             nextToken();
 
 
             analyzeFactor();
         } else if (currentToken.is(Token.SABRE_PARENTESES)) {
-            exp.add(currentToken.lexeme);
+            exp.add(currentToken);
 
             nextToken();
 
@@ -287,15 +290,14 @@ public class Syntactic {
             if (!currentToken.is(Token.SFECHA_PARENTESES)) {
                 throw new SyntacticException(")");
             }
-            exp.add(currentToken.lexeme);
-            //TODO ?
-            //PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
-            //TODO semantica(pos_fixa)
+            exp.add(currentToken);
+
+
             nextToken();
 
 
         } else if (currentToken.is(Token.SVERDADEIRO) || currentToken.is(Token.SFALSO)) {
-            exp.add(currentToken.lexeme);
+            exp.add(currentToken);
             nextToken();
 
 
@@ -377,8 +379,8 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
         //TODO ?
-        PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
-        //TODO semantica(pos_fixa)
+      List<Token> postfixlist  =  PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+        PosfixConverter.semantic(postfixlist);
         if (!currentToken.is(Token.SENTAO)) {
             throw new SyntacticException("entao");
         }

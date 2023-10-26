@@ -5,42 +5,46 @@ import java.util.List;
 import java.util.Stack;
 
 public class PosfixConverter {
-    public static String infixToPostfix(List<String> expressionList) {
-     //   expressionList = Arrays.stream("( x + 7 * 5 div ( 30 + y ) <= ( x * a + 2 ) ) e ( z > 0 )".split(" ")).toList();
-        StringBuilder postfix = new StringBuilder();
-        Stack<String> stack = new Stack<>();
+    public static List<Token> infixToPostfix(List<Token> expressionList) {
+        List<Token> postfix = new ArrayList<>();
+        Stack<Token> stack = new Stack<>();
 
 
-        //infix: (3 * 3 + juninho)
 
-        //posfix: 3 3 * juninho +
 
-        for (String term : expressionList) {
-            if (precedence(term) != -1){
+        for (Token term : expressionList) {
+            if (precedence(term.lexeme) != -1){
                 //operador
-                while (!stack.isEmpty() && !stack.peek().equals("(") && precedence(stack.peek()) >= precedence(term)) {
-                    postfix.append(stack.pop());
+                while (!stack.isEmpty() && !stack.peek().equals("(") && precedence(stack.peek().lexeme) >= precedence(term.lexeme)) {
+                    postfix.add(stack.pop());
                 }
                 stack.push(term);
-            } else if (term.equals("(")) {
+            } else if (term.lexeme.equals("(")) {
                 stack.push(term);
-            } else if (term.equals(")")) {
+            } else if (term.lexeme.equals(")")) {
                 while (!stack.isEmpty()) {
-                    String pop = stack.pop();
-                    if (pop.equals("(")) break;
+                    Token pop = stack.pop();
+                    if (pop.lexeme.equals("(")) break;
 
-                    postfix.append(pop);
+                    postfix.add(pop);
                 }
-            } else if (Character.isLetterOrDigit(term.charAt(0))){
-                postfix.append(term);
+            } else if (term.is(Token.SIDENTIFICADOR) || term.is(Token.SNUMERO) || term.is(Token.SBOOLEANO) || term.is(Token.SFUNCAO)){
+                postfix.add(term);
             }
         }
 
         while (!stack.isEmpty()) {
-            postfix.append(stack.pop());
+            postfix.add(stack.pop());
         }
         expressionList.clear();
-        return postfix.toString();
+        return postfix;
+    }
+
+
+
+    public static void semantic(List<Token> postfix){
+        List<Symbol> symbols = preProcess(postfix);
+        return;
     }
 
     private static int precedence(String operator) {
@@ -61,6 +65,32 @@ public class PosfixConverter {
         }
         return -1;
     }
+
+    private static List<Symbol> preProcess(List<Token> postfix) {
+        List<Symbol> symbols = new ArrayList<>();
+
+
+        postfix.forEach(term -> {
+            Symbol symbol = new Symbol(term.lexeme);
+
+
+            if (term.is(Token.SIDENTIFICADOR)){
+                // TODO -> BUSCAR TIPO NA TABELA
+            } else if(term.is(Token.SNUMERO)) {
+                symbol.setType(SymbolType.VARIAVELINTEIRO);
+            } else if (term.is(Token.SBOOLEANO)) {
+                symbol.setType(SymbolType.VARIAVELBOOLEANO);
+            }
+            // TODO -> SFUNCAO
+
+
+            symbols.add(symbol);
+        });
+        return symbols;
+    }
+
+
+
 
     /*
           +  1
