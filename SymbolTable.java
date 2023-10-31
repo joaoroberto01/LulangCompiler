@@ -14,14 +14,18 @@ public class SymbolTable {
         return symbol;
     }
 
-    public static Symbol getSymbol(int index)
-    {
+    public static Symbol getSymbol(int index) {
         return symbolStack.get(index);
     }
 
-    public static int searchTable(String lexeme)
-    {
+    public static Symbol getSymbol(String lexeme) {
+        int index = searchTable(lexeme);
+        if (index == -1)
+            throw new CompilerException(lexeme + " not declared");
+        return getSymbol(index);
+    }
 
+    public static int searchTable(String lexeme) {
         for (int i = symbolStack.size() - 1; i > 0; i--) {
             Symbol symbol = symbolStack.get(i);
             if (symbol.getIdentifier().equals(lexeme)) {
@@ -30,7 +34,6 @@ public class SymbolTable {
 
         }
         return -1;
-
     }
 
 //    public int searchFirstLocalScopePosition(){

@@ -1,7 +1,7 @@
 public class Symbol {
-    private String identifier;
-    private SymbolType type;
-    private Boolean localScope = false;
+    public String identifier;
+    public SymbolType type;
+    public Boolean localScope = false;
 
 
     public Symbol(String identifier, SymbolType type, Boolean localScope) {

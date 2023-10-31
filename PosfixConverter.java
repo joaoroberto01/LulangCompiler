@@ -5,17 +5,15 @@ import java.util.List;
 import java.util.Stack;
 
 public class PosfixConverter {
+    //TODO a:= x+-z pode? como funciona unario? temos que fazer algo extra para tratar -u +u??
     public static List<Token> infixToPostfix(List<Token> expressionList) {
         List<Token> postfix = new ArrayList<>();
         Stack<Token> stack = new Stack<>();
 
-
-
-
         for (Token term : expressionList) {
             if (precedence(term.lexeme) != -1){
                 //operador
-                while (!stack.isEmpty() && !stack.peek().equals("(") && precedence(stack.peek().lexeme) >= precedence(term.lexeme)) {
+                while (!stack.isEmpty() && !stack.peek().lexeme.equals("(") && precedence(stack.peek().lexeme) >= precedence(term.lexeme)) {
                     postfix.add(stack.pop());
                 }
                 stack.push(term);
@@ -28,7 +26,8 @@ public class PosfixConverter {
 
                     postfix.add(pop);
                 }
-            } else if (term.is(Token.SIDENTIFICADOR) || term.is(Token.SNUMERO) || term.is(Token.SBOOLEANO) || term.is(Token.SFUNCAO)){
+            } else if (term.is(Token.SIDENTIFICADOR) || term.is(Token.SNUMERO) ||
+                    term.is(Token.SVERDADEIRO) || term.is(Token.SFALSO) || term.is(Token.SFUNCAO)){
                 postfix.add(term);
             }
         }
@@ -44,7 +43,60 @@ public class PosfixConverter {
 
     public static void semantic(List<Token> postfix){
         List<Symbol> symbols = preProcess(postfix);
+
+        //TODO tratar unario +u -u
+        for (int i = 0; i < symbols.size(); i++) {
+            Symbol symbol = symbols.get(i);
+
+            if (symbol.getType() != null) continue;
+
+            ConsumeType consumeType = consumeType(symbol.identifier);
+
+            if (symbol.identifier.equals("+u") || symbol.identifier.equals("-u") || symbol.identifier.equals("nao")) {
+                Symbol s1 = symbols.get(i - 1);
+                if (!s1.type.equals(consumeType.input)) {
+                    throw new CompilerException("erro semantico: tipo");
+                }
+                symbols.remove(i - 1);
+                i = i - 1;
+                symbol.type = consumeType.output;
+                continue;
+            }
+
+            Symbol s1 = symbols.get(i - 1);
+            Symbol s2 = symbols.get(i - 2);
+
+            if (!s1.type.equals(s2.type) || !s1.type.equals(consumeType.input)) {
+                throw new CompilerException("erro semantico: tipo");
+            }
+            symbols.remove(i - 1);
+            symbols.remove(i - 2);
+            i = i - 2;
+
+            symbol.type = consumeType.output;
+        }
+
         return;
+    }
+
+    public static int consumeSize(String input) {
+        if (input.equals("+u") || input.equals("-u") || input.equals("nao")) {
+            return 1;
+        }
+
+        return 2;
+    }
+
+    public static ConsumeType consumeType(String input) {
+        if (input.equals("e") || input.equals("ou") || input.equals("nao")) {
+            return new ConsumeType(SymbolType.VARIAVELBOOLEANO);
+        }
+
+        if (input.equals(">") || input.equals("<") || input.equals(">=") || input.equals("<=") || input.equals("=") || input.equals("!=")) {
+            return new ConsumeType(SymbolType.VARIAVELINTEIRO, SymbolType.VARIAVELBOOLEANO);
+        }
+
+        return new ConsumeType(SymbolType.VARIAVELINTEIRO);
     }
 
     private static int precedence(String operator) {
@@ -69,20 +121,16 @@ public class PosfixConverter {
     private static List<Symbol> preProcess(List<Token> postfix) {
         List<Symbol> symbols = new ArrayList<>();
 
-
         postfix.forEach(term -> {
             Symbol symbol = new Symbol(term.lexeme);
 
-
             if (term.is(Token.SIDENTIFICADOR)){
-                // TODO -> BUSCAR TIPO NA TABELA
+                symbol = SymbolTable.getSymbol(term.lexeme);
             } else if(term.is(Token.SNUMERO)) {
                 symbol.setType(SymbolType.VARIAVELINTEIRO);
-            } else if (term.is(Token.SBOOLEANO)) {
+            } else if (term.is(Token.SVERDADEIRO) || term.is(Token.SFALSO)) {
                 symbol.setType(SymbolType.VARIAVELBOOLEANO);
             }
-            // TODO -> SFUNCAO
-
 
             symbols.add(symbol);
         });
