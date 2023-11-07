@@ -41,10 +41,11 @@ public class PosfixConverter {
 
 
 
-    public static void semantic(List<Token> postfix){
+    public static SymbolType semantic(List<Token> postfix){
         List<Symbol> symbols = preProcess(postfix);
 
-        //TODO tratar unario +u -u
+        SymbolType returnType = null;
+
         for (int i = 0; i < symbols.size(); i++) {
             Symbol symbol = symbols.get(i);
 
@@ -73,10 +74,11 @@ public class PosfixConverter {
             symbols.remove(i - 2);
             i = i - 2;
 
-            symbol.type = consumeType.output;
+            returnType = symbol.type = consumeType.output;
         }
 
-        return;
+
+        return returnType;
     }
 
     public static int consumeSize(String input) {

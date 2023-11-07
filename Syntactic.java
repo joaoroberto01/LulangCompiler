@@ -131,14 +131,14 @@ public class Syntactic {
         }
     }
 
-    //FIXME Não sabemos se a implementação está correta (NAO ESTA!!!!)
-    private static void analyzeProcedureCall() {
-
+    private static void analyzeProcedureCall(SymbolType variableType) {
+        //TODO verificar se o simbolo atual é um procedimento, senao ERROOOO
+        if (variableType != SymbolType.PROCEDIMENTO) {
+            throw new CompilerException("expected procedure, '" + variableType + "' found");
+        }
     }
 
     private static void analyzeProcedureDeclaration() {
-
-
         nextToken();
 
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
@@ -190,10 +190,9 @@ public class Syntactic {
     private static void analyzeWhile() {
         nextToken();
         analyzeExpression();
-        //TODO ?
-        PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
 
-        //TODO semantica(pos_fixa)
+        List<Token> postfixlist = PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+        PosfixConverter.semantic(postfixlist);
 
         if (!currentToken.is(Token.SFACA)) {
             throw new SyntacticException("faca");
@@ -238,6 +237,7 @@ public class Syntactic {
         analyzeFactor();
         while (currentToken.is(Token.SMULT) || currentToken.is(Token.SDIV) || currentToken.is(Token.SE)) {
             exp.add(currentToken);
+
             nextToken();
             analyzeFactor();
         }
@@ -307,30 +307,34 @@ public class Syntactic {
     }
 
 
-    private static void analyzeAttribution() {
+    private static void analyzeAttribution(SymbolType variableType) {
         // por enquanto colocar analisa expressao mas nao é isso de fato o certo é a Analisa_atribuicao
         nextToken();
         analyzeExpression();
-        //TODO ?
-        PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
-        //TODO semantica(pos_fixa)
 
+        List<Token> postfixlist = PosfixConverter.infixToPostfix(exp);
+        SymbolType returnType = PosfixConverter.semantic(postfixlist);
+
+        if (returnType != variableType) {
+            throw new CompilerException("incompatible types ('" + variableType + "' and '" + returnType + "')");
+        }
     }
 
 
     private static void analyzeAtribCallProc() {
-        String lexeme = currentToken.lexeme;
+        Symbol symbol = SymbolTable.getSymbol(currentToken.lexeme);
 
         nextToken();
-        if(SymbolTable.searchTable(lexeme) == -1)
-        {
-            throw  new CompilerException("symbol not declared");
+        //Ler o token antes de dar o erro, para atualizar as coordenadas em caso de erro
+
+        if(symbol == null) {
+            throw new CompilerException("symbol not declared");
         }
 
         if (currentToken.is(Token.SATRIBUICAO)) {
-            analyzeAttribution();
+            analyzeAttribution(symbol.type);
         } else {
-            analyzeProcedureCall();
+            analyzeProcedureCall(symbol.type);
         }
     }
 
@@ -378,8 +382,8 @@ public class Syntactic {
     private static void analyzeIf() {
         nextToken();
         analyzeExpression();
-        //TODO ?
-      List<Token> postfixlist  =  PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+
+        List<Token> postfixlist  =  PosfixConverter.infixToPostfix(exp);
         PosfixConverter.semantic(postfixlist);
         if (!currentToken.is(Token.SENTAO)) {
             throw new SyntacticException("entao");
