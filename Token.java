@@ -3,7 +3,7 @@ import java.util.Map;
 
 public class Token {
     public final String symbol;
-    public final String lexeme;
+    public String lexeme;
 
     public Token(String symbol, String lexeme) {
         this.symbol = symbol;

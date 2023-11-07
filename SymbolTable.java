@@ -146,14 +146,11 @@ public class SymbolTable {
         }
     }
 
-    public  static  void popUntilLocalScope()
-    {
-        while (!symbolStack.isEmpty() && (!symbolStack.peek().getLocalScope()))
-        {
+    public static void popUntilLocalScope() {
+        while (!symbolStack.isEmpty() && (!symbolStack.peek().getLocalScope())) {
             symbolStack.pop();
         }
-        if(!symbolStack.isEmpty())
-        {
+        if(!symbolStack.isEmpty()) {
             symbolStack.peek().setLocalScope(false);
         }
 

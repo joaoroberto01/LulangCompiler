@@ -69,8 +69,7 @@ public class Syntactic {
         }
 
 
-        if(SymbolTable.searchDeclarationFuncTable(currentToken.lexeme))
-        {
+        if(SymbolTable.searchDeclarationFuncTable(currentToken.lexeme)) {
             throw new CompilerException("function already declared");
         }
         Symbol insertedSymbol = SymbolTable.insertSymbol(currentToken);
@@ -218,8 +217,9 @@ public class Syntactic {
     }
 
     private static void analyzeSimpleExpression() {
-
         if (currentToken.is(Token.SMAIS) || currentToken.is(Token.SMENOS)) {
+            currentToken.lexeme = currentToken.is(Token.SMAIS) ? "+u" : "-u";
+
             exp.add(currentToken);
             nextToken();
         }
@@ -420,8 +420,7 @@ public class Syntactic {
                 throw new SyntacticException();
             }
 
-            if(SymbolTable.searchDuplicityVarTable(currentToken.lexeme))
-            {
+            if(SymbolTable.searchDuplicityVarTable(currentToken.lexeme)) {
                 throw new CompilerException("variable already declared");
             }
             SymbolTable.insertSymbol(currentToken);

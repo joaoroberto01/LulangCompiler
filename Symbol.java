@@ -1,22 +1,28 @@
 public class Symbol {
+    public static int nextAvailableAddress = 1;
+    //FIXME endereço 0 reservado para retorno
+
     public String identifier;
     public SymbolType type;
     public Boolean localScope = false;
+    public int address;
+    public int label;
+
+    //FIXME dentro de uma funcao, atribuição de funcao do lado esquerdo (func := 4) so permitido se essa funcao for a funcao atual
 
 
     public Symbol(String identifier, SymbolType type, Boolean localScope) {
         this.identifier = identifier;
         this.type = type;
         this.localScope = localScope;
+        this.address = nextAvailableAddress++;
     }
 
     public Symbol(String identifier, SymbolType type) {
-        this.identifier = identifier;
-        this.type = type;
+        this(identifier, type, false);
     }
     public Symbol(String identifier) {
-        this.identifier = identifier;
-
+        this(identifier, null);
     }
 
     public String getIdentifier() {

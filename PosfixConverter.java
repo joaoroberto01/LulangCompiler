@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class PosfixConverter {
-    //TODO a:= x+-z pode? como funciona unario? temos que fazer algo extra para tratar -u +u??
 
-    //TODO dentro de uma funcao, atribuição de funcao do lado esquerdo (func := 4) so permitido se essa funcao for a funcao atual
     public static List<Token> infixToPostfix(List<Token> expressionList) {
         List<Token> postfix = new ArrayList<>();
         Stack<Token> stack = new Stack<>();
