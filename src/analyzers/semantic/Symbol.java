@@ -1,3 +1,5 @@
+package src.analyzers.semantic;
+
 public class Symbol {
     public static int nextAvailableAddress = 1;
     //FIXME endereço 0 reservado para retorno

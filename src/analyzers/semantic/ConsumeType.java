@@ -1,3 +1,5 @@
+package src.analyzers.semantic;
+
 public class ConsumeType {
     public SymbolType input;
     public SymbolType output;

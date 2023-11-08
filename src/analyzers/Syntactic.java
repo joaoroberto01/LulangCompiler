@@ -1,3 +1,14 @@
+package src.analyzers;
+
+import src.analyzers.semantic.PosfixConverter;
+import src.analyzers.semantic.Symbol;
+import src.analyzers.semantic.SymbolTable;
+import src.analyzers.semantic.SymbolType;
+import src.exceptions.CompilerException;
+import src.exceptions.SemanticException;
+import src.exceptions.SyntacticException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +27,8 @@ public class Syntactic {
             throw new CompilerException("unexpected EOF");
     }
 
-    public static void analyze() {
-        Lexical.init("sint1.txt");
+    public static void analyze(String filepath) throws IOException {
+        Lexical.init(filepath);
         //rotulo
         nextToken();
         if (!currentToken.is(Token.SPROGRAMA)) {
@@ -27,7 +38,7 @@ public class Syntactic {
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
-        SymbolTable.insertSymbol(new Symbol(currentToken.lexeme, SymbolType.NOMEDEPROGRAMA));
+        SymbolTable.insertSymbol(new Symbol(currentToken.lexeme, SymbolType.PROGRAMA));
 
         nextToken();
         if (!currentToken.is(Token.SPONTO_VIRGULA)) {
@@ -68,9 +79,9 @@ public class Syntactic {
             throw new SyntacticException();
         }
 
-
-        if(SymbolTable.searchDeclarationFuncTable(currentToken.lexeme)) {
-            throw new CompilerException("function already declared");
+        Symbol symbol = SymbolTable.getSymbol(currentToken.lexeme);
+        if (symbol != null) {
+            throw SemanticException.functionDeclaredException(symbol.identifier, true);
         }
         Symbol insertedSymbol = SymbolTable.insertSymbol(currentToken);
 
@@ -84,9 +95,9 @@ public class Syntactic {
         }
 
         if (currentToken.is(Token.SINTEIRO)) {
-            insertedSymbol.setType(SymbolType.FUNCAOINTEIRO);
+            insertedSymbol.setType(SymbolType.FUNCAO_INTEIRO);
         } else if (currentToken.is(Token.SBOOLEANO)) {
-            insertedSymbol.setType(SymbolType.FUNCAOBOOLEANO);
+            insertedSymbol.setType(SymbolType.FUNCAO_BOOLEANO);
         }
 
         nextToken();
@@ -131,10 +142,10 @@ public class Syntactic {
         }
     }
 
-    private static void analyzeProcedureCall(SymbolType variableType) {
+    private static void analyzeProcedureCall(Symbol symbol) {
         //TODO verificar se o simbolo atual é um procedimento, senao ERROOOO
-        if (variableType != SymbolType.PROCEDIMENTO) {
-            throw new CompilerException("expected procedure, '" + variableType + "' found");
+        if (symbol.type != SymbolType.PROCEDIMENTO) {
+            throw new CompilerException(String.format("expected procedure, found symbol '%s' (%s)", symbol.identifier, symbol.type));
         }
     }
 
@@ -145,9 +156,8 @@ public class Syntactic {
             throw new SyntacticException();
         }
 
-
-        if (SymbolTable.searchDeclarationProcTable(currentToken.lexeme)) {
-            throw new CompilerException("procedure already declared");
+        if (SymbolTable.hasProcedureDeclaration(currentToken.lexeme)) {
+            throw SemanticException.procedureDeclaredException(currentToken.lexeme, true);
         }
         SymbolTable.insertSymbol(new Symbol(currentToken.lexeme, SymbolType.PROCEDIMENTO, true));
 
@@ -217,7 +227,7 @@ public class Syntactic {
 
     private static void analyzeSimpleExpression() {
         if (currentToken.is(Token.SMAIS) || currentToken.is(Token.SMENOS)) {
-            currentToken.lexeme = currentToken.is(Token.SMAIS) ? "+u" : "-u";
+            currentToken.lexeme = currentToken.is(Token.SMAIS) ? Token.SPOSITIVO : Token.SNEGATIVO;
 
             exp.add(currentToken);
             nextToken();
@@ -245,46 +255,35 @@ public class Syntactic {
 
     private static void analyzeFactor() {
         if (currentToken.is(Token.SIDENTIFICADOR)) {
-
-            int index = SymbolTable.searchTable(currentToken.lexeme);
+            int index = SymbolTable.searchSymbol(currentToken.lexeme, false);
 
             if (index == -1) {
-                throw new CompilerException("function " + currentToken.lexeme + " not declared");
+                throw SemanticException.symbolDeclaredException("symbol", currentToken.lexeme, false);
             }
             SymbolType type = SymbolTable.getSymbol(index).getType();
-            if (type.equals(SymbolType.FUNCAOINTEIRO)
-                    || type.equals(SymbolType.FUNCAOBOOLEANO)) {
+            if (type.equals(SymbolType.FUNCAO_INTEIRO)
+                    || type.equals(SymbolType.FUNCAO_BOOLEANO)) {
                 analyzeFunctionCall();
 
-            } else if (type.equals(SymbolType.VARIAVELINTEIRO) || type.equals(SymbolType.VARIAVELBOOLEANO)) {
+            } else if (type.equals(SymbolType.VARIAVEL_INTEIRO) || type.equals(SymbolType.VARIAVEL_BOOLEANO)) {
                 exp.add(currentToken);
                 nextToken();
             } else {
                 nextToken();
             }
-
-
-            //TODO sera que a função abaixo abrange a regra <variavel> do nao terminal <fator> ? aguarde os proximos capitulos...
-
-
         } else if (currentToken.is(Token.SNUMERO)) {
             exp.add(currentToken);
 
             nextToken();
-
         } else if (currentToken.is(Token.SNAO)) {
             exp.add(currentToken);
 
             nextToken();
-
-
             analyzeFactor();
         } else if (currentToken.is(Token.SABRE_PARENTESES)) {
             exp.add(currentToken);
 
             nextToken();
-
-
             analyzeExpression();
 
             if (!currentToken.is(Token.SFECHA_PARENTESES)) {
@@ -292,22 +291,17 @@ public class Syntactic {
             }
             exp.add(currentToken);
 
-
             nextToken();
-
-
         } else if (currentToken.is(Token.SVERDADEIRO) || currentToken.is(Token.SFALSO)) {
             exp.add(currentToken);
             nextToken();
-
-
         } else {
             throw new SyntacticException();
         }
     }
 
 
-    private static void analyzeAttribution(SymbolType variableType) {
+    private static void analyzeAttribution(Symbol symbol) {
         // por enquanto colocar analisa expressao mas nao é isso de fato o certo é a Analisa_atribuicao
         nextToken();
         analyzeExpression();
@@ -315,26 +309,27 @@ public class Syntactic {
         List<Token> postfixlist = PosfixConverter.infixToPostfix(exp);
         SymbolType returnType = PosfixConverter.semantic(postfixlist);
 
-        if (returnType != variableType) {
-            throw new CompilerException("incompatible types ('" + variableType + "' and '" + returnType + "')");
+        if (symbol.type != returnType) {
+            throw SemanticException.incompatibleTypesException(symbol, returnType);
         }
     }
 
 
     private static void analyzeAtribCallProc() {
-        Symbol symbol = SymbolTable.getSymbol(currentToken.lexeme);
+        String lexeme = currentToken.lexeme;
+        Symbol symbol = SymbolTable.getSymbol(lexeme);
 
         nextToken();
         //Ler o token antes de dar o erro, para atualizar as coordenadas em caso de erro
 
         if(symbol == null) {
-            throw new CompilerException("symbol not declared");
+            throw SemanticException.symbolDeclaredException("symbol", lexeme, false);
         }
 
         if (currentToken.is(Token.SATRIBUICAO)) {
-            analyzeAttribution(symbol.type);
+            analyzeAttribution(symbol);
         } else {
-            analyzeProcedureCall(symbol.type);
+            analyzeProcedureCall(symbol);
         }
     }
 
@@ -348,8 +343,8 @@ public class Syntactic {
             throw new SyntacticException();
         }
 
-        if (!SymbolTable.searchDeclarationVarTable(currentToken.lexeme)) {
-            throw new CompilerException("variable not found");
+        if (!SymbolTable.hasVarDeclaration(currentToken.lexeme, false)) {
+            throw SemanticException.variableDeclaredException(currentToken.lexeme, false);
         }
 
         nextToken();
@@ -369,8 +364,8 @@ public class Syntactic {
             throw new SyntacticException();
         }
 
-        if (!SymbolTable.searchDeclarationVarOrFuncTable(currentToken.lexeme)) {
-            throw new CompilerException("variable or function not found ");
+        if (!SymbolTable.hasVarOrFunctionDeclaration(currentToken.lexeme)) {
+            throw SemanticException.symbolDeclaredException("symbol", currentToken.lexeme, false);
         }
         nextToken();
         if (!currentToken.is(Token.SFECHA_PARENTESES)) {
@@ -424,8 +419,8 @@ public class Syntactic {
                 throw new SyntacticException();
             }
 
-            if(SymbolTable.searchDuplicityVarTable(currentToken.lexeme)) {
-                throw new CompilerException("variable already declared");
+            if(SymbolTable.hasVarDeclaration(currentToken.lexeme, true)) {
+                throw SemanticException.variableDeclaredException(currentToken.lexeme, true);
             }
             SymbolTable.insertSymbol(currentToken);
 

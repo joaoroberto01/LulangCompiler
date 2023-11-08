@@ -1,6 +1,10 @@
-import java.beans.Expression;
+package src.analyzers.semantic;
+
+import src.analyzers.Token;
+import src.exceptions.CompilerException;
+import src.exceptions.SemanticException;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -53,10 +57,10 @@ public class PosfixConverter {
 
             ConsumeType consumeType = consumeType(symbol.identifier);
 
-            if (symbol.identifier.equals("+u") || symbol.identifier.equals("-u") || symbol.identifier.equals("nao")) {
+            if (symbol.identifier.equals(Token.SPOSITIVO) || symbol.identifier.equals(Token.SNEGATIVO) || symbol.identifier.equals("nao")) {
                 Symbol s1 = symbols.get(i - 1);
                 if (!s1.type.equals(consumeType.input)) {
-                    throw new CompilerException("erro semantico: tipo");
+                    throw SemanticException.expressionNotAllowedException(symbol, s1);
                 }
                 symbols.remove(i - 1);
                 i = i - 1;
@@ -68,12 +72,13 @@ public class PosfixConverter {
             Symbol s2 = symbols.get(i - 2);
 
             if (!s1.type.equals(s2.type) || !s1.type.equals(consumeType.input)) {
-                throw new CompilerException("erro semantico: tipo");
+                throw SemanticException.expressionNotAllowedException(symbol, s1, s2);
             }
             symbols.remove(i - 1);
             symbols.remove(i - 2);
             i = i - 2;
 
+            symbol.identifier = null;
             returnType = symbol.type = consumeType.output;
         }
 
@@ -85,7 +90,7 @@ public class PosfixConverter {
     }
 
     public static int consumeSize(String input) {
-        if (input.equals("+u") || input.equals("-u") || input.equals("nao")) {
+        if (input.equals(Token.SPOSITIVO) || input.equals(Token.SNEGATIVO) || input.equals("nao")) {
             return 1;
         }
 
@@ -94,14 +99,14 @@ public class PosfixConverter {
 
     public static ConsumeType consumeType(String input) {
         if (input.equals("e") || input.equals("ou") || input.equals("nao")) {
-            return new ConsumeType(SymbolType.VARIAVELBOOLEANO);
+            return new ConsumeType(SymbolType.VARIAVEL_BOOLEANO);
         }
 
         if (input.equals(">") || input.equals("<") || input.equals(">=") || input.equals("<=") || input.equals("=") || input.equals("!=")) {
-            return new ConsumeType(SymbolType.VARIAVELINTEIRO, SymbolType.VARIAVELBOOLEANO);
+            return new ConsumeType(SymbolType.VARIAVEL_INTEIRO, SymbolType.VARIAVEL_BOOLEANO);
         }
 
-        return new ConsumeType(SymbolType.VARIAVELINTEIRO);
+        return new ConsumeType(SymbolType.VARIAVEL_INTEIRO);
     }
 
     private static int precedence(String operator) {
@@ -116,7 +121,7 @@ public class PosfixConverter {
             return 2;
         }
 
-        if (operator.equals("+u") || operator.equals("-u")
+        if (operator.equals(Token.SPOSITIVO) || operator.equals(Token.SNEGATIVO)
                 || operator.equals("nao")) {
             return 3;
         }
@@ -132,31 +137,13 @@ public class PosfixConverter {
             if (term.is(Token.SIDENTIFICADOR)){
                 symbol = SymbolTable.getSymbol(term.lexeme);
             } else if(term.is(Token.SNUMERO)) {
-                symbol.setType(SymbolType.VARIAVELINTEIRO);
+                symbol.setType(SymbolType.VARIAVEL_INTEIRO);
             } else if (term.is(Token.SVERDADEIRO) || term.is(Token.SFALSO)) {
-                symbol.setType(SymbolType.VARIAVELBOOLEANO);
+                symbol.setType(SymbolType.VARIAVEL_BOOLEANO);
             }
 
             symbols.add(symbol);
         });
         return symbols;
     }
-
-
-
-
-    /*
-          +  1
-          -  1
-          *  2
-          div  2
-          +u 3
-          -u 3
-
-          relacionais 1
-
-           nao 3
-           e 2
-           ou 1
-         */
 }

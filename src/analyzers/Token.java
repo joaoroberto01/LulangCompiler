@@ -1,3 +1,5 @@
+package src.analyzers;
+
 import java.util.AbstractMap;
 import java.util.Map;
 
@@ -58,6 +60,8 @@ public class Token {
     public static final String SMENOR = "smenor";
     public static final String SMENORIG = "smenorig";
     public static final String SDIF = "sdif";
+    public static final String SPOSITIVO = "+u";
+    public static final String SNEGATIVO = "-u";
 
 
     public static final Map<String, String> PUNCTUATION_SYMBOLS = Map.ofEntries(

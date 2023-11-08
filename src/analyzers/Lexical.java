@@ -1,3 +1,7 @@
+package src.analyzers;
+
+import src.exceptions.LexicalException;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,7 +33,7 @@ public class Lexical {
     public static int lineCounter = 1;
     public static int columnCounter = 1;
 
-    public static void init(String filepath) {
+    public static void init(String filepath) throws IOException {
         File file = new File(filepath);
         filename = file.getName();
         sourceCode = readFileAsString(filepath);
@@ -38,26 +42,24 @@ public class Lexical {
         read();
     }
 
-    public static void analyze() {
-        init("source_code.ll");
-        while (notEof()) {
-            handleCommentsAndWhitespaces();
-            if(unclosedComment || eof)
-                break;
-            Token token = getToken();
-
-            tokenList.add(token);
-        }
-        System.out.println("\nacabou o semestre");
-    }
+//    public static void analyze() {
+//        init("source_code.ll");
+//        while (notEof()) {
+//            handleCommentsAndWhitespaces();
+//            if(unclosedComment || eof)
+//                break;
+//            Token token = getToken();
+//
+//            tokenList.add(token);
+//        }
+//        System.out.println("\nacabou o semestre");
+//    }
 
     public static Token nextToken() {
         lineCounter = currentLine;
         columnCounter = currentColumn;
 
         handleCommentsAndWhitespaces();
-        if(unclosedComment)
-            throw new RuntimeException("unclosed comment");
         if (eof)
             return null;
         return getToken();
@@ -107,7 +109,7 @@ public class Lexical {
             return handlePunctuation();
         }
 
-        throw new CompilerException(String.format("unrecognized symbol '%c'", currentChar));
+        throw new LexicalException(currentChar);
     }
 
     private static Token handleDigit() {
@@ -147,7 +149,7 @@ public class Lexical {
                 if (currentChar == '=') {
                     token = new Token(Token.SDIF, "!=");
                 } else {
-                    throw new CompilerException("unrecognized symbol '!'");
+                    throw new LexicalException('!');
                 }
             }
 
@@ -208,7 +210,7 @@ public class Lexical {
                 while (currentChar != '}' && notEof()) {
                     read();
                     if (eof) {
-                        throw new CompilerException("unclosed comment. missing '}'");
+                        throw LexicalException.unclosedCommentException();
                     }
                 }
                 read();
@@ -226,12 +228,7 @@ public class Lexical {
         return new Token(symbol, key);
     }
 
-    private static String readFileAsString(String filename) {
-        try {
-            return new String(Files.readAllBytes(Paths.get(filename)));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
+    private static String readFileAsString(String filename) throws IOException {
+        return new String(Files.readAllBytes(Paths.get(filename)));
     }
 }
