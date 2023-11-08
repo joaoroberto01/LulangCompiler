@@ -77,6 +77,9 @@ public class PosfixConverter {
             returnType = symbol.type = consumeType.output;
         }
 
+        if (returnType == null && !symbols.isEmpty()) {
+            returnType = symbols.get(0).type;
+        }
 
         return returnType;
     }
