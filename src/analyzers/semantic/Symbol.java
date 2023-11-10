@@ -12,6 +12,14 @@ public class Symbol {
 
     //FIXME dentro de uma funcao, atribuição de funcao do lado esquerdo (func := 4) so permitido se essa funcao for a funcao atual
 
+    public boolean equivalentTypeTo(SymbolType otherType) {
+        return switch (type) {
+            case VARIAVEL_INTEIRO, FUNCAO_INTEIRO -> SymbolType.integers.contains(otherType);
+            case VARIAVEL_BOOLEANO, FUNCAO_BOOLEANO -> SymbolType.booleans.contains(otherType);
+
+            default -> type == otherType;
+        };
+    }
 
     public Symbol(String identifier, SymbolType type, Boolean localScope) {
         this.identifier = identifier;

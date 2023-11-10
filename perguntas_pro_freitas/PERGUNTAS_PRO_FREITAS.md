@@ -1,10 +1,20 @@
+.
 rotulo precisa ser LX (L1) ou é so um exemplo?
-
+---------------
+.
 programa entra na tabela de simbolos... oq colocar no endereço? nada? -1? 777?
-
-
-## Vai dar overlap de variavel?
+---------------
+Vai dar overlap de variavel?
 ![Lulang](p1.png)
 
-
+---------------
+.
 e sobre comentarios no nosso codigo? precisa?
+----------------
+funcao soma: inteiro;  
+inicio  
+....leia(soma)  
+fim;
+
+pode isso arnaldo? ou precisa chamar leia(x) e atribuir a variavel soma (retorno de funcao)  
+**SE PUDER, hasVarDeclaration dentro de analyzeRead precisa buscar por funcoes tambem

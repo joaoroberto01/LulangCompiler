@@ -1,7 +1,6 @@
 package src.analyzers.semantic;
 
 import src.analyzers.Token;
-import src.exceptions.SemanticException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,9 +13,10 @@ public class SymbolTable {
         symbolStack.add(symbol);
     }
 
-    public static Symbol insertSymbol(Token token) {
+    public static Symbol insertSymbol(Token token, boolean localScope) {
         Symbol symbol = new Symbol(token.lexeme);
-        symbolStack.add(symbol);
+        symbol.setLocalScope(localScope);
+        insertSymbol(symbol);
         return symbol;
     }
 
@@ -26,8 +26,8 @@ public class SymbolTable {
 
     public static Symbol getSymbol(String lexeme) {
         int index = searchSymbol(lexeme, false);
-        if (index == -1)
-            throw SemanticException.symbolDeclaredException("symbol", lexeme, false);
+        if (index == -1) return null;
+
         return getSymbol(index);
     }
 
@@ -78,6 +78,18 @@ public class SymbolTable {
             }
         }
         return -1;
+    }
+
+    public static boolean isReturnVar(String lexeme) {
+        for (int i = symbolStack.size() - 1; i > 0; i--) {
+            Symbol symbol = symbolStack.get(i);
+
+            if (symbol.localScope) {
+                return symbol.identifier.equals(lexeme);
+            }
+        }
+
+        return false;
     }
 
     // procurar se existe duplicidade de var em nivel LOCAL

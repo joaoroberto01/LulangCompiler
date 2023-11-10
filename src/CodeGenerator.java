@@ -26,11 +26,9 @@ public class CodeGenerator {
                generate("LDC", "0","","");
                break;
            case Token.SIDENTIFICADOR:
-               if (symbol.type == SymbolType.VARIAVEL_BOOLEANO || symbol.type == SymbolType.VARIAVEL_INTEIRO) {
+               if (SymbolType.variables.contains(symbol.type)) {
                    generate("LDV", String.valueOf(symbol.address), "", "");
-               }
-               else if(symbol.type == SymbolType.PROCEDIMENTO || symbol.type == SymbolType.FUNCAO_BOOLEANO || symbol.type == SymbolType.FUNCAO_INTEIRO)
-               {
+               } else if(symbol.type == SymbolType.PROCEDIMENTO || SymbolType.functions.contains(symbol.type)) {
                    generate("CALL", String.valueOf(symbol.address), "", "");
                }
                break;

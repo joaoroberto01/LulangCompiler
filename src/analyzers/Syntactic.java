@@ -83,7 +83,7 @@ public class Syntactic {
         if (symbol != null) {
             throw SemanticException.functionDeclaredException(symbol.identifier, true);
         }
-        Symbol insertedSymbol = SymbolTable.insertSymbol(currentToken);
+        Symbol insertedSymbol = SymbolTable.insertSymbol(currentToken, true);
 
         nextToken();
         if (!currentToken.is(Token.SDOISPONTOS)) {
@@ -144,7 +144,7 @@ public class Syntactic {
 
     private static void analyzeProcedureCall(Symbol symbol) {
         //TODO verificar se o simbolo atual é um procedimento, senao ERROOOO
-        if (symbol.type != SymbolType.PROCEDIMENTO) {
+        if (!symbol.equivalentTypeTo(SymbolType.PROCEDIMENTO)) {
             throw new CompilerException(String.format("expected procedure, found symbol '%s' (%s)", symbol.identifier, symbol.type));
         }
     }
@@ -261,11 +261,9 @@ public class Syntactic {
                 throw SemanticException.symbolDeclaredException("symbol", currentToken.lexeme, false);
             }
             SymbolType type = SymbolTable.getSymbol(index).getType();
-            if (type.equals(SymbolType.FUNCAO_INTEIRO)
-                    || type.equals(SymbolType.FUNCAO_BOOLEANO)) {
+            if (SymbolType.functions.contains(type)) {
                 analyzeFunctionCall();
-
-            } else if (type.equals(SymbolType.VARIAVEL_INTEIRO) || type.equals(SymbolType.VARIAVEL_BOOLEANO)) {
+            } else if (SymbolType.variables.contains(type)) {
                 exp.add(currentToken);
                 nextToken();
             } else {
@@ -309,7 +307,7 @@ public class Syntactic {
         List<Token> postfixlist = PosfixConverter.infixToPostfix(exp);
         SymbolType returnType = PosfixConverter.semantic(postfixlist);
 
-        if (symbol.type != returnType) {
+        if (!symbol.equivalentTypeTo(returnType)) {
             throw SemanticException.incompatibleTypesException(symbol, returnType);
         }
     }
@@ -343,7 +341,8 @@ public class Syntactic {
             throw new SyntacticException();
         }
 
-        if (!SymbolTable.hasVarDeclaration(currentToken.lexeme, false)) {
+        if (!(SymbolTable.hasVarDeclaration(currentToken.lexeme, false) ||
+                SymbolTable.isReturnVar(currentToken.lexeme))) {
             throw SemanticException.variableDeclaredException(currentToken.lexeme, false);
         }
 
@@ -414,15 +413,19 @@ public class Syntactic {
     }
 
     private static void analyzeVariables() {
+
         while (!currentToken.is(Token.SDOISPONTOS)) {
             if (!currentToken.is(Token.SIDENTIFICADOR)) {
                 throw new SyntacticException();
             }
 
+            if (SymbolTable.isReturnVar(currentToken.lexeme)) {
+                throw SemanticException.unavailableVariable(currentToken.lexeme);
+            }
             if(SymbolTable.hasVarDeclaration(currentToken.lexeme, true)) {
                 throw SemanticException.variableDeclaredException(currentToken.lexeme, true);
             }
-            SymbolTable.insertSymbol(currentToken);
+            SymbolTable.insertSymbol(currentToken, false);
 
             nextToken();
 

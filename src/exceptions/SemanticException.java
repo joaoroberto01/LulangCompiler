@@ -45,4 +45,8 @@ public class SemanticException extends CompilerException {
     public static SemanticException symbolDeclaredException(String name, String identifier, boolean declared) {
         return new SemanticException(String.format("%s '%s' %s declared", name, identifier, declared ? "already" : "not"));
     }
+
+    public static SemanticException unavailableVariable(String lexeme) {
+        return new SemanticException(String.format("unavailable variable name: '%s' (function return)", lexeme));
+    }
 }

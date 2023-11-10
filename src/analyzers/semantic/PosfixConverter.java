@@ -59,7 +59,7 @@ public class PosfixConverter {
 
             if (symbol.identifier.equals(Token.SPOSITIVO) || symbol.identifier.equals(Token.SNEGATIVO) || symbol.identifier.equals("nao")) {
                 Symbol s1 = symbols.get(i - 1);
-                if (!s1.type.equals(consumeType.input)) {
+                if (!s1.equivalentTypeTo(consumeType.input)) {
                     throw SemanticException.expressionNotAllowedException(symbol, s1);
                 }
                 symbols.remove(i - 1);
@@ -71,7 +71,7 @@ public class PosfixConverter {
             Symbol s1 = symbols.get(i - 1);
             Symbol s2 = symbols.get(i - 2);
 
-            if (!s1.type.equals(s2.type) || !s1.type.equals(consumeType.input)) {
+            if (!s1.equivalentTypeTo(s2.type) || !s1.equivalentTypeTo(consumeType.input)) {
                 throw SemanticException.expressionNotAllowedException(symbol, s1, s2);
             }
             symbols.remove(i - 1);
@@ -136,6 +136,9 @@ public class PosfixConverter {
 
             if (term.is(Token.SIDENTIFICADOR)){
                 symbol = SymbolTable.getSymbol(term.lexeme);
+                if (symbol == null) {
+                    throw SemanticException.symbolDeclaredException("symbol", term.lexeme, false);
+                }
             } else if(term.is(Token.SNUMERO)) {
                 symbol.setType(SymbolType.VARIAVEL_INTEIRO);
             } else if (term.is(Token.SVERDADEIRO) || term.is(Token.SFALSO)) {
