@@ -27,7 +27,7 @@ public class SemanticException extends CompilerException {
         return new SemanticException(String.format("expression not allowed: '%s %s'", operator.identifier, s1.identifier));
     }
     public static SemanticException incompatibleTypesException(Symbol symbol, SymbolType returnType) {
-        return new SemanticException(String.format("incompatible types: '%s' (%s) and %s", symbol.identifier, symbol.type, returnType));
+        return new SemanticException(String.format("incompatible types: '%s' %s and %s", symbol.identifier, symbol.type, returnType));
     }
 
     public static SemanticException variableDeclaredException(String lexeme, boolean declared) {

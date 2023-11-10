@@ -28,7 +28,7 @@ public class Lexical {
 
     private static boolean unclosedComment;
 
-    private static Character currentChar;
+    private static Character currentChar = 0;
 
     public static int lineCounter = 1;
     public static int columnCounter = 1;
@@ -38,6 +38,7 @@ public class Lexical {
         filename = file.getName();
         sourceCode = readFileAsString(filepath);
         length = sourceCode.length();
+        eof = length == 0;
 
         read();
     }
