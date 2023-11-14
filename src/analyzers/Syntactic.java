@@ -1,5 +1,6 @@
 package src.analyzers;
 
+import src.CodeGenerator;
 import src.analyzers.semantic.PosfixConverter;
 import src.analyzers.semantic.Symbol;
 import src.analyzers.semantic.SymbolTable;
@@ -18,8 +19,12 @@ public class Syntactic {
 
     private static boolean expectedEOF;
 
+
     public static List<Token> exp = new ArrayList<>();
 
+    public static Token getCurrentToken() {
+        return currentToken;
+    }
 
     private static void nextToken() {
         currentToken = Lexical.nextToken();
@@ -34,7 +39,9 @@ public class Syntactic {
         if (!currentToken.is(Token.SPROGRAMA)) {
             throw new SyntacticException("programa");
         }
+        CodeGenerator.generate(currentToken);
         nextToken();
+
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
@@ -91,7 +98,7 @@ public class Syntactic {
         }
         nextToken();
         if (!currentToken.is(Token.SINTEIRO) && !currentToken.is(Token.SBOOLEANO)) {
-            throw new SyntacticException("tipo");
+            throw new SyntacticException("inteiro|booleano");
         }
 
         if (currentToken.is(Token.SINTEIRO)) {
@@ -174,7 +181,7 @@ public class Syntactic {
 
     private static void analyzeType() {
         if (!currentToken.is(Token.SINTEIRO) && !currentToken.is(Token.SBOOLEANO)) {
-            throw new SyntacticException("tipo");
+            throw new SyntacticException("inteiro|booleano");
         }
 
         SymbolTable.putTypeTable(currentToken);
@@ -201,8 +208,10 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
 
-        List<Token> postfixlist = PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+        List<Symbol> postfixlist = PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
         PosfixConverter.semantic(postfixlist);
+        CodeGenerator.generateExpression(postfixlist);
+
 
         if (!currentToken.is(Token.SFACA)) {
             throw new SyntacticException("faca");
@@ -304,8 +313,10 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
 
-        List<Token> postfixlist = PosfixConverter.infixToPostfix(exp);
+        List<Symbol> postfixlist = PosfixConverter.infixToPostfix(exp);
         SymbolType returnType = PosfixConverter.semantic(postfixlist);
+        CodeGenerator.generateExpression(postfixlist);
+
 
         if (!symbol.equivalentTypeTo(returnType)) {
             throw SemanticException.incompatibleTypesException(symbol, returnType);
@@ -341,9 +352,13 @@ public class Syntactic {
             throw new SyntacticException();
         }
 
-        if (!(SymbolTable.hasVarDeclaration(currentToken.lexeme, false) ||
-                SymbolTable.isReturnVar(currentToken.lexeme))) {
+        Symbol symbol = SymbolTable.getSymbol(currentToken.lexeme);
+        if (symbol == null) {
             throw SemanticException.variableDeclaredException(currentToken.lexeme, false);
+        }
+
+        if (symbol.type != SymbolType.VARIAVEL_INTEIRO) {
+            throw SemanticException.incompatibleTypesException(symbol, SymbolType.VARIAVEL_INTEIRO);
         }
 
         nextToken();
@@ -356,7 +371,7 @@ public class Syntactic {
     private static void analyzeWrite() {
         nextToken();
         if (!currentToken.is(Token.SABRE_PARENTESES)) {
-            throw new SyntacticException();
+            throw new SyntacticException("(");
         }
         nextToken();
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
@@ -377,8 +392,10 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
 
-        List<Token> postfixlist  =  PosfixConverter.infixToPostfix(exp);
+        List<Symbol>postfixlist  =  PosfixConverter.infixToPostfix(exp);
         PosfixConverter.semantic(postfixlist);
+        CodeGenerator.generateExpression(postfixlist);
+
         if (!currentToken.is(Token.SENTAO)) {
             throw new SyntacticException("entao");
         }

@@ -2,13 +2,13 @@ package src.analyzers.semantic;
 
 public class Symbol {
     public static int nextAvailableAddress = 1;
+    public static int nextAvailableLabel = 1;
     //FIXME endereço 0 reservado para retorno
 
     public String identifier;
     public SymbolType type;
     public Boolean localScope = false;
     public int address;
-    public int label;
 
     //FIXME dentro de uma funcao, atribuição de funcao do lado esquerdo (func := 4) so permitido se essa funcao for a funcao atual
 

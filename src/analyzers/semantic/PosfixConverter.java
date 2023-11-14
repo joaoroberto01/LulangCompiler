@@ -10,7 +10,7 @@ import java.util.Stack;
 
 public class PosfixConverter {
 
-    public static List<Token> infixToPostfix(List<Token> expressionList) {
+    public static List<Symbol> infixToPostfix(List<Token> expressionList) {
         List<Token> postfix = new ArrayList<>();
         Stack<Token> stack = new Stack<>();
 
@@ -40,13 +40,13 @@ public class PosfixConverter {
             postfix.add(stack.pop());
         }
         expressionList.clear();
-        return postfix;
+        return preProcess(postfix);
     }
 
 
 
-    public static SymbolType semantic(List<Token> postfix){
-        List<Symbol> symbols = preProcess(postfix);
+    public static SymbolType semantic(List<Symbol> postfix){
+        List<Symbol> symbols = postfix;
 
         SymbolType returnType = null;
 

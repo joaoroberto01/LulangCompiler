@@ -11,10 +11,19 @@ Vai dar overlap de variavel?
 .
 e sobre comentarios no nosso codigo? precisa?
 ----------------
+isso nao pode 
 funcao soma: inteiro;  
 inicio  
 ....leia(soma)  
-fim;
+fim; 
+
+isso pode
+funcao teste: inteiro;
+    funcao soma: inteiro;
+    var teste;
+    inicio  
+    ....leia(teste)  
+    fim;
 
 pode isso arnaldo? ou precisa chamar leia(x) e atribuir a variavel soma (retorno de funcao)  
 **SE PUDER, hasVarDeclaration dentro de analyzeRead precisa buscar por funcoes tambem
