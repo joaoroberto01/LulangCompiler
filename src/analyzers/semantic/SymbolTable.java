@@ -5,6 +5,7 @@ import src.analyzers.Token;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class SymbolTable {
     private static final Stack<Symbol> symbolStack = new Stack<>();
@@ -82,7 +83,7 @@ public class SymbolTable {
             Symbol symbol = symbolStack.get(i);
             if (symbol.identifier.equals(searchLexeme)) {
                 //Verifica se o identificador esta entre os tipos pesquisado (se nao forem informados os tipos, retornar true)
-                List<SymbolType> searchTypeList  = Arrays.stream(searchTypes).toList();
+                List<SymbolType> searchTypeList  = Arrays.stream(searchTypes).collect(Collectors.toList());
                 if (searchTypeList.isEmpty() || searchTypeList.contains(symbol.type)) {
                     return i;
                 }

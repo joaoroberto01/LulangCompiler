@@ -1,31 +1,26 @@
 package src.analyzers.semantic;
 
 public class Symbol implements Cloneable {
-
-    public static int getNextAvailableAddressAndUpdate(int allocatedSize) {
-        int availableAddress = nextAvailableAddress;
-        nextAvailableAddress += allocatedSize;
-
-        return availableAddress;
-    }
     public static int nextAvailableAddress = 1;
     public static int nextAvailableLabel = 1;
-    //FIXME endereço 0 reservado para retorno
 
     public String identifier;
     public SymbolType type;
     public boolean localScope;
     public int address;
-
-    //FIXME dentro de uma funcao, atribuição de funcao do lado esquerdo (func := 4) so permitido se essa funcao for a funcao atual
+    //FIXME endereço 0 reservado para retorno
 
     public boolean equivalentTypeTo(SymbolType otherType) {
-        return switch (type) {
-            case VARIAVEL_INTEIRO, FUNCAO_INTEIRO -> SymbolType.integers.contains(otherType);
-            case VARIAVEL_BOOLEANO, FUNCAO_BOOLEANO -> SymbolType.booleans.contains(otherType);
-
-            default -> type == otherType;
+        switch (type) {
+            case VARIAVEL_INTEIRO:
+            case FUNCAO_INTEIRO:
+                return SymbolType.integers.contains(otherType);
+            case VARIAVEL_BOOLEANO:
+            case FUNCAO_BOOLEANO:
+                return SymbolType.booleans.contains(otherType);
         };
+
+        return type == otherType;
     }
 
     public Symbol(String identifier, SymbolType type, Boolean localScope) {
@@ -37,6 +32,7 @@ public class Symbol implements Cloneable {
     public Symbol(String identifier, SymbolType type) {
         this(identifier, type, false);
     }
+
     public Symbol(String identifier) {
         this(identifier, null);
     }
@@ -81,7 +77,7 @@ public class Symbol implements Cloneable {
 
     @Override
     public String toString() {
-        return String.format("{%s | %s | %s | 0x%d}", identifier, type, localScope, address );
+        return String.format("{%s | %s | %s | 0x%d}", identifier, type, localScope, address);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class Syntactic {
         if (!currentToken.is(Token.SPROGRAMA)) {
             throw new SyntacticException("programa");
         }
-        CodeGenerator.appendCode(currentToken);
+        CodeGenerator.generate(currentToken);
         nextToken();
 
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
@@ -55,7 +55,7 @@ public class Syntactic {
         if (!currentToken.is(Token.SPONTO)) {
             throw new SyntacticException(".");
         }
-        CodeGenerator.appendCode(currentToken);
+        CodeGenerator.generate(currentToken);
         expectedEOF = true;
         nextToken();
         if (currentToken != null) {

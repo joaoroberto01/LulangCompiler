@@ -129,32 +129,32 @@ public class Lexical {
         Token token = null;
 
         switch (currentChar) {
-            case '>' -> {
+            case '>':
                 read();
                 if (currentChar == '=') {
                     token = new Token(Token.SMAIORIG, ">=");
                 } else {
                     return new Token(Token.SMAIOR, ">");
                 }
-            }
-            case '<' -> {
+                break;
+            case '<':
                 read();
                 if (currentChar == '=') {
                     token = new Token(Token.SMENORIG, "<=");
                 } else {
                     return new Token(Token.SMENOR, "<");
                 }
-            }
-            case '!' -> {
+                break;
+            case '!':
                 read();
                 if (currentChar == '=') {
                     token = new Token(Token.SDIF, "!=");
                 } else {
                     throw new LexicalException('!');
                 }
-            }
-
-            case '=' -> token = new Token(Token.SIG, "=");
+                break;
+            case '=':
+                token = new Token(Token.SIG, "=");
         }
         read();
 
@@ -174,10 +174,10 @@ public class Lexical {
         read();
         if (currentChar == '=') {
             read();
-            return new Token(Token.SATRIBUICAO,":=");
+            return new Token(Token.SATRIBUICAO, ":=");
         }
 
-        return new Token(Token.SDOISPONTOS,":");
+        return new Token(Token.SDOISPONTOS, ":");
     }
 
     private static Token handleIdentifierAndReservedWord() {
@@ -194,7 +194,7 @@ public class Lexical {
         return new Token(symbol, identifier.toString());
     }
 
-    private static Token handlePunctuation(){
+    private static Token handlePunctuation() {
         Token token = getTokenByKey(currentChar.toString(), Token.PUNCTUATION_SYMBOLS);
 
         read();
