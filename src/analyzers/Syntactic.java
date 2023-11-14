@@ -39,7 +39,7 @@ public class Syntactic {
         if (!currentToken.is(Token.SPROGRAMA)) {
             throw new SyntacticException("programa");
         }
-        CodeGenerator.generate(currentToken);
+        CodeGenerator.appendCode(currentToken);
         nextToken();
 
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
@@ -55,6 +55,7 @@ public class Syntactic {
         if (!currentToken.is(Token.SPONTO)) {
             throw new SyntacticException(".");
         }
+        CodeGenerator.appendCode(currentToken);
         expectedEOF = true;
         nextToken();
         if (currentToken != null) {
@@ -63,6 +64,7 @@ public class Syntactic {
 
         //sucesso
         System.out.println("AUUUUUUUUUUUUUUUUUUUU");
+        System.out.println(CodeGenerator.codeBuilder.toString());
     }
 
     private static void analyzeBlock() {
@@ -70,6 +72,13 @@ public class Syntactic {
         analyzeVariablesStep();
         analyzeSubRoutine();
         analyzeCommands();
+
+        int deallocatedSize = SymbolTable.popUntilLocalScope();
+        if (deallocatedSize == 0) return;
+
+        CodeGenerator.generateDALLOC(Symbol.nextAvailableAddress, deallocatedSize);
+
+        Symbol.nextAvailableAddress -= deallocatedSize;
     }
 
 
@@ -111,8 +120,6 @@ public class Syntactic {
         if (currentToken.is(Token.SPONTO_VIRGULA)) {
             analyzeBlock();
         }
-
-        SymbolTable.popUntilLocalScope();
     }
 
     private static void analyzeCommands() {
@@ -173,9 +180,6 @@ public class Syntactic {
             throw new SyntacticException(";");
         }
         analyzeBlock();
-
-        SymbolTable.popUntilLocalScope();
-
     }
 
 
@@ -184,7 +188,7 @@ public class Syntactic {
             throw new SyntacticException("inteiro|booleano");
         }
 
-        SymbolTable.putTypeTable(currentToken);
+        SymbolTable.putVarTypesInTable(currentToken);
         nextToken();
     }
 
@@ -321,6 +325,8 @@ public class Syntactic {
         if (!symbol.equivalentTypeTo(returnType)) {
             throw SemanticException.incompatibleTypesException(symbol, returnType);
         }
+
+        CodeGenerator.generateStore(symbol);
     }
 
 
@@ -352,9 +358,15 @@ public class Syntactic {
             throw new SyntacticException();
         }
 
-        Symbol symbol = SymbolTable.getSymbol(currentToken.lexeme);
-        if (symbol == null) {
+
+        if (!SymbolTable.hasVarDeclaration(currentToken.lexeme, false)) {
             throw SemanticException.variableDeclaredException(currentToken.lexeme, false);
+        }
+
+        Symbol symbol = SymbolTable.getSymbol(currentToken.lexeme);
+
+        if (symbol == null) {
+            throw new CompilerException("null symbol");
         }
 
         if (symbol.type != SymbolType.VARIAVEL_INTEIRO) {
@@ -365,6 +377,9 @@ public class Syntactic {
         if (!currentToken.is(Token.SFECHA_PARENTESES)) {
             throw new SyntacticException(")");
         }
+
+        CodeGenerator.generateRead(symbol);
+
         nextToken();
     }
 
@@ -381,10 +396,15 @@ public class Syntactic {
         if (!SymbolTable.hasVarOrFunctionDeclaration(currentToken.lexeme)) {
             throw SemanticException.symbolDeclaredException("symbol", currentToken.lexeme, false);
         }
+        Symbol symbol = SymbolTable.getSymbol(currentToken.lexeme);
+
         nextToken();
         if (!currentToken.is(Token.SFECHA_PARENTESES)) {
             throw new SyntacticException(")");
         }
+
+        CodeGenerator.generateWrite(symbol);
+
         nextToken();
     }
 
@@ -419,7 +439,6 @@ public class Syntactic {
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
         }
-
         while (currentToken.is(Token.SIDENTIFICADOR)) {
             analyzeVariables();
             if (!currentToken.is(Token.SPONTO_VIRGULA)) {
@@ -430,7 +449,7 @@ public class Syntactic {
     }
 
     private static void analyzeVariables() {
-
+        int variablesCount = 0;
         while (!currentToken.is(Token.SDOISPONTOS)) {
             if (!currentToken.is(Token.SIDENTIFICADOR)) {
                 throw new SyntacticException();
@@ -443,6 +462,7 @@ public class Syntactic {
                 throw SemanticException.variableDeclaredException(currentToken.lexeme, true);
             }
             SymbolTable.insertSymbol(currentToken, false);
+            variablesCount++;
 
             nextToken();
 
@@ -459,6 +479,11 @@ public class Syntactic {
         }
         nextToken();
         analyzeType();
+
+        CodeGenerator.generateALLOC(Symbol.nextAvailableAddress, variablesCount);
+
+        SymbolTable.putVarAddresses(variablesCount);
+
     }
 
 }

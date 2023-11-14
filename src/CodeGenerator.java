@@ -4,68 +4,82 @@ import src.analyzers.Token;
 import src.analyzers.semantic.Symbol;
 import src.analyzers.semantic.SymbolType;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.Stack;
 
 public class CodeGenerator {
    public static StringBuilder codeBuilder = new StringBuilder();
 
 
-   public static void generate(Token token) {
-       generate(token, null);
+   public static void saveFile(String filepath) throws IOException {
+       String[] parts = filepath.split("\\.");
+       if (parts.length == 0) return;
+       filepath = parts[0].concat(".obj");
+
+       if (codeBuilder.length() == 0) return;
+
+       Path path = Paths.get(filepath);
+       Files.writeString(path, codeBuilder.toString());
+   }
+   public static void appendCode(Token token) {
+       appendCode(token, null);
    }
 
-   public static  void  generate(Token token, Symbol symbol){
+   public static void appendCode(Token token, Symbol symbol){
        switch (token.symbol){
            case Token.SNUMERO:
-              generate("LDC", token.lexeme,"","");
+              appendCode("LDC", token.lexeme,"","");
                break;
            case Token.SVERDADEIRO:
-               generate("LDC", "1","","");
+               appendCode("LDC", "1","","");
                break;
            case Token.SFALSO:
-               generate("LDC", "0","","");
+               appendCode("LDC", "0","","");
                break;
-
-           case Token.SLEIA:
-               generate("RD", "","","");
-               break;
-           case Token.SESCREVA:
-               generate("PRN", "","","");
-               break;
-
            case Token.SPROGRAMA:
-               generate("START", "","","");
+               appendCode("START", "","","");
                break;
            case Token.SPONTO:
-               generate("HLT", "","","");
-               break;
-           case Token.SATRIBUICAO:
-               generate("STR",  String.valueOf(symbol.address),"","");
+               appendCode("HLT", "","","");
                break;
            default:
-               if (token.lexeme.equals(Token.SNEGATIVO))
-               {
-                   generate("INV", "","","");
-               }
+
                break;
        }
    }
 
     public static  void  generateJMP(int label){
-        generate("JMP", "L" + label,"","");
+        appendCode("JMP", "L" + label,"","");
     }
     public static  void  generateCall(int label){
-        generate("CALL", "L" + label,"","");
+        appendCode("CALL", "L" + label,"","");
     }
     public static  void  generateCallF(int label){
-        generate("JMPF", "L" + label,"","");
+        appendCode("JMPF", "L" + label,"","");
     }
-    public static  void  generateALLOC(int address,int size){
-        generate("ALLOC", String.valueOf(address),String.valueOf(size),"");
+    public static  void  generateALLOC(int address, int size){
+        appendCode("ALLOC", String.valueOf(address),String.valueOf(size),"");
     }
     public static  void  generateDALLOC(int address,int size){
-        generate("ALLOC", String.valueOf(address),String.valueOf(size),"");
+        appendCode("DALLOC", String.valueOf(address),String.valueOf(size),"");
+    }
+
+    public static void generateStore(Symbol symbol) {
+        appendCode("STR",  String.valueOf(symbol.address),"","");
+    }
+
+    public static void generateRead(Symbol symbol) {
+        appendCode("RD", "","","");
+        generateStore(symbol);
+    }
+
+    public static void generateWrite(Symbol symbol) {
+        appendCode("LDV", String.valueOf(symbol.address), "", "");
+        appendCode("PRN", "","","");
     }
     public static  void  generateExpression(List<Symbol> symbols){
         for (Symbol symbol : symbols) {
@@ -77,62 +91,67 @@ public class CodeGenerator {
         if (symbol.type == null) {
             switch (symbol.identifier) {
                 case "+":
-                    generate("ADD", "", "", "");
+                    appendCode("ADD", "", "", "");
                     break;
                 case "-":
-                    generate("SUB", "", "", "");
+                    appendCode("SUB", "", "", "");
                     break;
                 case "div":
-                    generate("DIVI", "", "", "");
+                    appendCode("DIVI", "", "", "");
                     break;
                 case "*":
-                    generate("MULT", "", "", "");
+                    appendCode("MULT", "", "", "");
                     break;
                 case "e":
-                    generate("AND", "","","");
+                    appendCode("AND", "","","");
                     break;
                 case "ou":
-                    generate("OR", "","","");
+                    appendCode("OR", "","","");
                     break;
                 case "nao":
-                    generate("NEG", "","","");
+                    appendCode("NEG", "","","");
                     break;
                 case "<":
-                    generate("CME", "","","");
+                    appendCode("CME", "","","");
                     break;
                 case ">":
-                    generate("CMA", "","","");
+                    appendCode("CMA", "","","");
                     break;
                 case "=":
-                    generate("CEQ", "","","");
+                    appendCode("CEQ", "","","");
                     break;
                 case "!=":
-                    generate("CDIF", "","","");
+                    appendCode("CDIF", "","","");
                     break;
                 case "<=":
-                    generate("CMEQ", "","","");
+                    appendCode("CMEQ", "","","");
                     break;
                 case ">=":
-                    generate("CMAQ", "","","");
+                    appendCode("CMAQ", "","","");
                     break;
                 case Token.SNEGATIVO:
-                    generate("INV", "", "", "");
+                    appendCode("INV", "", "", "");
                     break;
             }
             return;
         }
-        //identificador
-        if (SymbolType.variables.contains(symbol.type)) {
-            generate("LDV", String.valueOf(symbol.address), "", "");
+
+        //identificador ou numero
+        if (symbol.identifier.matches("\\d+")) {
+            appendCode("LDC", symbol.identifier, "", "");
+        }else if (SymbolType.variables.contains(symbol.type)) {
+            appendCode("LDV", String.valueOf(symbol.address), "", "");
         } else if (SymbolType.functions.contains(symbol.type)) {
-            generate("CALL", String.valueOf(symbol.address), "", "");
+            appendCode("CALL", String.valueOf(symbol.address), "", "");
 
         }
     }
 
 
-    private static void generate(String instruction, String attribute1, String attribute2, String label) {
-       String objInstruction = String.format("%4s%8s%4s%4s\n", label, instruction, attribute1, attribute2);
+    private static void appendCode(String instruction, String attribute1, String attribute2, String label) {
+       String objInstruction = String.format("%-4s%-8s%-4s%-4s\n", label, instruction, attribute1, attribute2);
        codeBuilder.append(objInstruction);
    }
+
+
 }

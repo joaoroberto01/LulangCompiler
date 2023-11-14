@@ -44,9 +44,18 @@ public class PosfixConverter {
     }
 
 
+    private static List<Symbol> cloneList(List<Symbol> postfix) {
+        List<Symbol> symbols = new ArrayList<>();
+
+        for (Symbol symbol : postfix) {
+            symbols.add(symbol.clone());
+        }
+
+        return symbols;
+    }
 
     public static SymbolType semantic(List<Symbol> postfix){
-        List<Symbol> symbols = postfix;
+        List<Symbol> symbols = cloneList(postfix);
 
         SymbolType returnType = null;
 

@@ -1,13 +1,20 @@
 package src.analyzers.semantic;
 
-public class Symbol {
+public class Symbol implements Cloneable {
+
+    public static int getNextAvailableAddressAndUpdate(int allocatedSize) {
+        int availableAddress = nextAvailableAddress;
+        nextAvailableAddress += allocatedSize;
+
+        return availableAddress;
+    }
     public static int nextAvailableAddress = 1;
     public static int nextAvailableLabel = 1;
     //FIXME endereço 0 reservado para retorno
 
     public String identifier;
     public SymbolType type;
-    public Boolean localScope = false;
+    public boolean localScope;
     public int address;
 
     //FIXME dentro de uma funcao, atribuição de funcao do lado esquerdo (func := 4) so permitido se essa funcao for a funcao atual
@@ -25,7 +32,6 @@ public class Symbol {
         this.identifier = identifier;
         this.type = type;
         this.localScope = localScope;
-        this.address = nextAvailableAddress++;
     }
 
     public Symbol(String identifier, SymbolType type) {
@@ -51,6 +57,10 @@ public class Symbol {
         this.type = type;
     }
 
+    public void setAddress(int address) {
+        this.address = address;
+    }
+
     public Boolean getLocalScope() {
         return localScope;
     }
@@ -71,6 +81,15 @@ public class Symbol {
 
     @Override
     public String toString() {
-        return String.format("{%s | %s | %s }", identifier, type, localScope );
+        return String.format("{%s | %s | %s | 0x%d}", identifier, type, localScope, address );
+    }
+
+    @Override
+    public Symbol clone() {
+        try {
+            return (Symbol) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

@@ -32,7 +32,7 @@ public class SymbolTable {
     }
 
     //coloca tipo em todos que estão sem tipo até o primeiro com tipo
-    public static void putTypeTable(Token token) {
+    public static void putVarTypesInTable(Token token) {
         SymbolType type = null;
         if (token.is(Token.SINTEIRO)) {
             type = SymbolType.VARIAVEL_INTEIRO;
@@ -48,13 +48,27 @@ public class SymbolTable {
         }
     }
 
-    public static void popUntilLocalScope() {
+    public static void putVarAddresses(int variablesCount) {
+        int size = symbolStack.size();
+        for (int i = size - variablesCount; i < size; i++) {
+            Symbol symbol = symbolStack.get(i);
+            symbol.setAddress(Symbol.nextAvailableAddress++);
+        }
+    }
+
+    public static int popUntilLocalScope() {
+        int variablesCount = 0;
         while (!symbolStack.isEmpty() && (!symbolStack.peek().getLocalScope())) {
-            symbolStack.pop();
+            Symbol removedSymbol = symbolStack.pop();
+            if (SymbolType.variables.contains(removedSymbol.type)) {
+                variablesCount++;
+            }
         }
         if(!symbolStack.isEmpty()) {
             symbolStack.peek().setLocalScope(false);
         }
+
+        return variablesCount;
     }
 
     public static Symbol searchSymbol(String searchLexeme, SymbolType... searchType) {
