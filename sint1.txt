@@ -29,6 +29,12 @@ fim;
 
 
 procedimento analisa2;
+    var analisa1: inteiro;
+    funcao a;
+    inicio
+      leia(a);
+      b:= a*a+(c div b)
+    fim;
 inicio
   leia(a);
   b:= a*a+(c div b)

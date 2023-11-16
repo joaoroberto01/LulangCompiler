@@ -29,18 +29,5 @@ pode isso arnaldo? ou precisa chamar leia(x) e atribuir a variavel soma (retorno
 **SE PUDER, hasVarDeclaration dentro de analyzeRead precisa buscar por funcoes tambem
 
 
-var x,y;
-      z; 
-ALLOC 0, 2
-ALLOC 2, 1
-
-ou ALLOC 0,3 ?????
-
-
-matheus nao esta totalmente confiante da soluçao
-
-ALLOc 0,2
-ALLOC 2,1
-
-...
-DALLOC 3, 3
+atualmente esta permitindo declarar variavel com nome de proc ja definido, e proc com nome de variavel:
+![Lulang](p2.png)
