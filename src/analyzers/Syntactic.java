@@ -68,6 +68,7 @@ public class Syntactic {
     }
 
     private static void analyzeBlock() {
+        //todo rotulo
         nextToken();
         analyzeVariablesStep();
         analyzeSubRoutine();
@@ -83,13 +84,21 @@ public class Syntactic {
 
 
     //FIXME Não sabemos se a implementação está correta (NAO ESTA!!!!)
-    private static void analyzeFunctionCall() {
+    private static void analyzeFunctionCall(Symbol symbol) {
+        if (!SymbolType.functions.contains(symbol.type)) {
+            throw new CompilerException(String.format("expected function, found symbol '%s' (%s)", symbol.identifier, symbol.type));
+        }
         exp.add(currentToken);
 
         nextToken();
+        CodeGenerator.generateCall(symbol.address);
+
+
     }
 
     private static void analyzeFunctionDeclaration() {
+        int functionLabel = Symbol.nextAvailableLabel++;
+        CodeGenerator.generateLabel(functionLabel);
         nextToken();
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
             throw new SyntacticException();
@@ -100,7 +109,7 @@ public class Syntactic {
             throw SemanticException.functionDeclaredException(symbol.identifier, true);
         }
         Symbol insertedSymbol = SymbolTable.insertSymbol(currentToken, true);
-
+        insertedSymbol.address = functionLabel;
         nextToken();
         if (!currentToken.is(Token.SDOISPONTOS)) {
             throw new SyntacticException(":");
@@ -141,7 +150,11 @@ public class Syntactic {
     }
 
     private static void analyzeSubRoutine() {
+        boolean jumpped = false;
+        int label = Symbol.nextAvailableLabel;
         while (currentToken.is(Token.SPROCEDIMENTO) || currentToken.is(Token.SFUNCAO)) {
+            CodeGenerator.generateJMP(Symbol.nextAvailableLabel++);
+            jumpped = true;
             if (currentToken.is(Token.SPROCEDIMENTO)) {
                 analyzeProcedureDeclaration();
             } else {
@@ -154,6 +167,9 @@ public class Syntactic {
 
             nextToken();
         }
+        if (jumpped) {
+            CodeGenerator.generateLabel(label);
+        }
     }
 
     private static void analyzeProcedureCall(Symbol symbol) {
@@ -161,9 +177,12 @@ public class Syntactic {
         if (!symbol.equivalentTypeTo(SymbolType.PROCEDIMENTO)) {
             throw new CompilerException(String.format("expected procedure, found symbol '%s' (%s)", symbol.identifier, symbol.type));
         }
+        CodeGenerator.generateCall(symbol.address);
     }
 
     private static void analyzeProcedureDeclaration() {
+        int procedureLabel = Symbol.nextAvailableLabel++;
+        CodeGenerator.generateLabel(procedureLabel);
         nextToken();
 
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
@@ -173,7 +192,8 @@ public class Syntactic {
         if (SymbolTable.hasProcedureDeclaration(currentToken.lexeme)) {
             throw SemanticException.procedureDeclaredException(currentToken.lexeme, true);
         }
-        SymbolTable.insertSymbol(new Symbol(currentToken.lexeme, SymbolType.PROCEDIMENTO, true));
+        Symbol insertedSymbol = SymbolTable.insertSymbol(new Symbol(currentToken.lexeme, SymbolType.PROCEDIMENTO, true));
+        insertedSymbol.address = procedureLabel;
 
         nextToken();
         if (!currentToken.is(Token.SPONTO_VIRGULA)) {
@@ -209,12 +229,17 @@ public class Syntactic {
     }
 
     private static void analyzeWhile() {
+        int beginLabel = Symbol.nextAvailableLabel;
+        CodeGenerator.generateLabel(Symbol.nextAvailableLabel++);
+
         nextToken();
         analyzeExpression();
 
         List<Symbol> postfixlist = PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
         PosfixConverter.semantic(postfixlist);
         CodeGenerator.generateExpression(postfixlist);
+        int outLabel = Symbol.nextAvailableLabel++;
+        CodeGenerator.generateJMPF(outLabel);
 
 
         if (!currentToken.is(Token.SFACA)) {
@@ -222,6 +247,9 @@ public class Syntactic {
         }
         nextToken();
         analyzeSimpleCommand();
+        CodeGenerator.generateJMP(beginLabel);
+        CodeGenerator.generateLabel(outLabel);
+
     }
 
     private static void analyzeExpression() {
@@ -273,10 +301,10 @@ public class Syntactic {
             if (index == -1) {
                 throw SemanticException.symbolDeclaredException("symbol", currentToken.lexeme, false);
             }
-            SymbolType type = SymbolTable.getSymbol(index).getType();
-            if (SymbolType.functions.contains(type)) {
-                analyzeFunctionCall();
-            } else if (SymbolType.variables.contains(type)) {
+            Symbol symbol = SymbolTable.getSymbol(index);
+            if (SymbolType.functions.contains(symbol.type)) {
+                analyzeFunctionCall(symbol);
+            } else if (SymbolType.variables.contains(symbol.type)) {
                 exp.add(currentToken);
                 nextToken();
             } else {
@@ -409,6 +437,7 @@ public class Syntactic {
     }
 
     private static void analyzeIf() {
+
         nextToken();
         analyzeExpression();
 
@@ -419,13 +448,20 @@ public class Syntactic {
         if (!currentToken.is(Token.SENTAO)) {
             throw new SyntacticException("entao");
         }
+        CodeGenerator.generateJMPF(Symbol.nextAvailableLabel);
 
         nextToken();
         analyzeSimpleCommand();
         if (currentToken.is(Token.SSENAO)) {
+            CodeGenerator.generateJMP(Symbol.nextAvailableLabel + 1);
+            CodeGenerator.generateLabel(Symbol.nextAvailableLabel++);
             nextToken();
             analyzeSimpleCommand();
         }
+
+
+
+        CodeGenerator.generateLabel(Symbol.nextAvailableLabel++);
     }
 
 

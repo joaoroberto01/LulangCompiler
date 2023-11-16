@@ -48,15 +48,15 @@ public class CodeGenerator {
     }
 
     public static void generateJMP(int label) {
-        appendCode("JMP", "L" + label, "", "");
+        appendCode("JMP",   ""+label , "", "");
     }
 
     public static void generateCall(int label) {
-        appendCode("CALL", "L" + label, "", "");
+        appendCode("CALL", "" + label, "", "");
     }
 
-    public static void generateCallF(int label) {
-        appendCode("JMPF", "L" + label, "", "");
+    public static void generateJMPF(int label) {
+        appendCode("JMPF", "" + label, "", "");
     }
 
     public static void generateALLOC(int address, int size) {
@@ -74,6 +74,11 @@ public class CodeGenerator {
     public static void generateRead(Symbol symbol) {
         appendCode("RD", "", "", "");
         generateStore(symbol);
+    }
+
+    public static void generateLabel(int label) {
+        appendCode("NULL", "", "", label + "");
+
     }
 
     public static void generateWrite(Symbol symbol) {

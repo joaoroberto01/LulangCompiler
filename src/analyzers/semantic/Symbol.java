@@ -77,7 +77,8 @@ public class Symbol implements Cloneable {
 
     @Override
     public String toString() {
-        return String.format("{%s | %s | %s | 0x%d}", identifier, type, localScope, address);
+        String addressFormat = type == SymbolType.PROCEDIMENTO || type == SymbolType.FUNCAO_INTEIRO || type == SymbolType.FUNCAO_BOOLEANO || type == SymbolType.PROGRAMA ? "L" : "0x";
+        return String.format("{%s | %s | %s | %s%d }", identifier, type, localScope, addressFormat, address);
     }
 
     @Override

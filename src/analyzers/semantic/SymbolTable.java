@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 public class SymbolTable {
     private static final Stack<Symbol> symbolStack = new Stack<>();
 
-    public static void insertSymbol(Symbol symbol) {
+    public static Symbol insertSymbol(Symbol symbol) {
         symbolStack.add(symbol);
+
+        return symbol;
     }
 
     public static Symbol insertSymbol(Token token, boolean localScope) {
