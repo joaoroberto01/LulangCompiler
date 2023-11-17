@@ -12,6 +12,9 @@ public class LulangApplication {
         //TODO barrar entrada de .obj (apenas saida)
         try {
             Syntactic.analyze(filepath);
+            //sucesso
+            System.out.println("AUUUUUUUUUUUUUUUUUUUU");
+            System.out.println(CodeGenerator.codeBuilder.toString());
             CodeGenerator.saveFile(filepath);
         } catch (NoSuchFileException e) {
             System.err.printf("file '%s' not found%n", filepath);

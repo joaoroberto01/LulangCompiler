@@ -25,45 +25,31 @@ public class CodeGenerator {
         Files.writeString(path, codeBuilder.toString());
     }
 
-    public static void generate(Token token) {
-        switch (token.symbol) {
-            case Token.SNUMERO:
-                appendCode("LDC", token.lexeme, "", "");
-                break;
-            case Token.SVERDADEIRO:
-                appendCode("LDC", "1", "", "");
-                break;
-            case Token.SFALSO:
-                appendCode("LDC", "0", "", "");
-                break;
-            case Token.SPROGRAMA:
-                appendCode("START", "", "", "");
-                break;
-            case Token.SPONTO:
-                appendCode("HLT", "", "", "");
-                break;
-            default:
-                break;
-        }
+    public static void generateStart() {
+        appendCode("START", "", "", "");
     }
 
-    public static void generateJMP(int label) {
-        appendCode("JMP",   ""+label , "", "");
+    public static void generateHalt() {
+        appendCode("HLT", "", "", "");
+    }
+
+    public static void generateJump(int label) {
+        appendCode("JMP", String.valueOf(label), "", "");
     }
 
     public static void generateCall(int label) {
-        appendCode("CALL", "" + label, "", "");
+        appendCode("CALL", String.valueOf(label), "", "");
     }
 
-    public static void generateJMPF(int label) {
-        appendCode("JMPF", "" + label, "", "");
+    public static void generateJumpF(int label) {
+        appendCode("JMPF", String.valueOf(label), "", "");
     }
 
-    public static void generateALLOC(int address, int size) {
+    public static void generateAlloc(int address, int size) {
         appendCode("ALLOC", String.valueOf(address), String.valueOf(size), "");
     }
 
-    public static void generateDALLOC(int address, int size) {
+    public static void generateDalloc(int address, int size) {
         appendCode("DALLOC", String.valueOf(address), String.valueOf(size), "");
     }
 
@@ -77,7 +63,7 @@ public class CodeGenerator {
     }
 
     public static void generateLabel(int label) {
-        appendCode("NULL", "", "", label + "");
+        appendCode("NULL", "", "", String.valueOf(label));
 
     }
 
@@ -141,9 +127,13 @@ public class CodeGenerator {
             return;
         }
 
-        //identificador ou numero
+        //identificador, booleano ou numero
         if (symbol.identifier.matches("\\d+")) {
             appendCode("LDC", symbol.identifier, "", "");
+        } else if (symbol.identifier.equals("verdadeiro")) {
+            appendCode("LDC", "1", "", "");
+        } else if (symbol.identifier.equals("falso")) {
+            appendCode("LDC", "0", "", "");
         } else if (SymbolType.variables.contains(symbol.type)) {
             appendCode("LDV", String.valueOf(symbol.address), "", "");
         } else if (SymbolType.functions.contains(symbol.type)) {

@@ -39,7 +39,7 @@ public class Syntactic {
         if (!currentToken.is(Token.SPROGRAMA)) {
             throw new SyntacticException("programa");
         }
-        CodeGenerator.generate(currentToken);
+        CodeGenerator.generateStart();
         nextToken();
 
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
@@ -55,16 +55,12 @@ public class Syntactic {
         if (!currentToken.is(Token.SPONTO)) {
             throw new SyntacticException(".");
         }
-        CodeGenerator.generate(currentToken);
+        CodeGenerator.generateHalt();
         expectedEOF = true;
         nextToken();
         if (currentToken != null) {
             throw new SyntacticException();
         }
-
-        //sucesso
-        System.out.println("AUUUUUUUUUUUUUUUUUUUU");
-        System.out.println(CodeGenerator.codeBuilder.toString());
     }
 
     private static void analyzeBlock() {
@@ -77,7 +73,7 @@ public class Syntactic {
         int deallocatedSize = SymbolTable.popUntilLocalScope();
         if (deallocatedSize == 0) return;
 
-        CodeGenerator.generateDALLOC(Symbol.nextAvailableAddress, deallocatedSize);
+        CodeGenerator.generateDalloc(Symbol.nextAvailableAddress, deallocatedSize);
 
         Symbol.nextAvailableAddress -= deallocatedSize;
     }
@@ -153,7 +149,7 @@ public class Syntactic {
         boolean jumpped = false;
         int label = Symbol.nextAvailableLabel;
         while (currentToken.is(Token.SPROCEDIMENTO) || currentToken.is(Token.SFUNCAO)) {
-            CodeGenerator.generateJMP(Symbol.nextAvailableLabel++);
+            CodeGenerator.generateJump(Symbol.nextAvailableLabel++);
             jumpped = true;
             if (currentToken.is(Token.SPROCEDIMENTO)) {
                 analyzeProcedureDeclaration();
@@ -235,11 +231,11 @@ public class Syntactic {
         nextToken();
         analyzeExpression();
 
-        List<Symbol> postfixlist = PosfixConverter.infixToPostfix(exp);//TODO converter(inf, pos_fixa)
+        List<Symbol> postfixlist = PosfixConverter.infixToPostfix(exp);
         PosfixConverter.semantic(postfixlist);
         CodeGenerator.generateExpression(postfixlist);
         int outLabel = Symbol.nextAvailableLabel++;
-        CodeGenerator.generateJMPF(outLabel);
+        CodeGenerator.generateJumpF(outLabel);
 
 
         if (!currentToken.is(Token.SFACA)) {
@@ -247,7 +243,7 @@ public class Syntactic {
         }
         nextToken();
         analyzeSimpleCommand();
-        CodeGenerator.generateJMP(beginLabel);
+        CodeGenerator.generateJump(beginLabel);
         CodeGenerator.generateLabel(outLabel);
 
     }
@@ -448,12 +444,12 @@ public class Syntactic {
         if (!currentToken.is(Token.SENTAO)) {
             throw new SyntacticException("entao");
         }
-        CodeGenerator.generateJMPF(Symbol.nextAvailableLabel);
+        CodeGenerator.generateJumpF(Symbol.nextAvailableLabel);
 
         nextToken();
         analyzeSimpleCommand();
         if (currentToken.is(Token.SSENAO)) {
-            CodeGenerator.generateJMP(Symbol.nextAvailableLabel + 1);
+            CodeGenerator.generateJump(Symbol.nextAvailableLabel + 1);
             CodeGenerator.generateLabel(Symbol.nextAvailableLabel++);
             nextToken();
             analyzeSimpleCommand();
@@ -516,7 +512,7 @@ public class Syntactic {
         nextToken();
         analyzeType();
 
-        CodeGenerator.generateALLOC(Symbol.nextAvailableAddress, variablesCount);
+        CodeGenerator.generateAlloc(Symbol.nextAvailableAddress, variablesCount);
 
         SymbolTable.putVarAddresses(variablesCount);
 
