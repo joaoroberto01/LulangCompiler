@@ -27,6 +27,8 @@ public class CodeGenerator {
 
     public static void generateStart() {
         appendCode("START", "", "", "");
+        generateAlloc(0,1);
+
     }
 
     public static void generateHalt() {
@@ -56,7 +58,9 @@ public class CodeGenerator {
     public static void generateStore(Symbol symbol) {
         appendCode("STR", String.valueOf(symbol.address), "", "");
     }
-
+    public static void generateStoreFunction() {
+        appendCode("STR", String.valueOf(0), "", "");
+    }
     public static void generateRead(Symbol symbol) {
         appendCode("RD", "", "", "");
         generateStore(symbol);

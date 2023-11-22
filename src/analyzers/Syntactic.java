@@ -73,9 +73,10 @@ public class Syntactic {
         int deallocatedSize = SymbolTable.popUntilLocalScope();
         if (deallocatedSize == 0) return;
 
-        CodeGenerator.generateDalloc(Symbol.nextAvailableAddress, deallocatedSize);
-
         Symbol.nextAvailableAddress -= deallocatedSize;
+
+        CodeGenerator.generateDalloc((Symbol.nextAvailableAddress), deallocatedSize);
+
     }
 
 
@@ -210,7 +211,7 @@ public class Syntactic {
 
     private static void analyzeSimpleCommand() {
         if (currentToken.is(Token.SIDENTIFICADOR)) {
-            analyzeAtribCallProc();
+            analyzeAtribOrCallProc();
         } else if (currentToken.is(Token.SSE)) {
             analyzeIf();
         } else if (currentToken.is(Token.SENQUANTO)) {
@@ -338,6 +339,7 @@ public class Syntactic {
 
     private static void analyzeAttribution(Symbol symbol) {
         // por enquanto colocar analisa expressao mas nao é isso de fato o certo é a Analisa_atribuicao
+
         nextToken();
         analyzeExpression();
 
@@ -350,11 +352,20 @@ public class Syntactic {
             throw SemanticException.incompatibleTypesException(symbol, returnType);
         }
 
-        CodeGenerator.generateStore(symbol);
+        if (SymbolTable.isReturnVar(symbol.identifier)) {
+            CodeGenerator.generateStoreFunction();
+        }
+        else{
+            CodeGenerator.generateStore(symbol);
+        }
+
+
+
+
     }
 
 
-    private static void analyzeAtribCallProc() {
+    private static void analyzeAtribOrCallProc() {
         String lexeme = currentToken.lexeme;
         Symbol symbol = SymbolTable.getSymbol(lexeme);
 

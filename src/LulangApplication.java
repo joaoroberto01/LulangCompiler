@@ -7,7 +7,7 @@ import java.nio.file.NoSuchFileException;
 public class LulangApplication {
 
     public static void main(String[] args) {
-        String filepath = args.length == 0 ? "sint1.txt" : args[0];
+        String filepath = args.length == 0 ? "source_code.ll" : args[0];
 //        String filepath = args.length == 0 ? "source_code.ll" : args[0];
         //TODO barrar entrada de .obj (apenas saida)
         try {
