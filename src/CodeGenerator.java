@@ -28,7 +28,6 @@ public class CodeGenerator {
     public static void generateStart() {
         appendCode("START", "", "", "");
         generateAlloc(0,1);
-
     }
 
     public static void generateHalt() {
