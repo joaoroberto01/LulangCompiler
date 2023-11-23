@@ -70,6 +70,11 @@ public class CodeGenerator {
 
     }
 
+    public static void generateLoadReturn() {
+        appendCode("LDV", "0", "", "");
+
+    }
+
     public static void generateWrite(Symbol symbol) {
         appendCode("LDV", String.valueOf(symbol.address), "", "");
         appendCode("PRN", "", "", "");
@@ -139,10 +144,10 @@ public class CodeGenerator {
             appendCode("LDC", "0", "", "");
         } else if (SymbolType.variables.contains(symbol.type)) {
             appendCode("LDV", String.valueOf(symbol.address), "", "");
-        } else if (SymbolType.functions.contains(symbol.type)) {
-            appendCode("CALL", String.valueOf(symbol.address), "", "");
-
-        }
+        }// else if (SymbolType.functions.contains(symbol.type)) {
+//            appendCode("CALL", String.valueOf(symbol.address), "", "");
+//
+//        }
     }
 
 

@@ -89,6 +89,7 @@ public class Syntactic {
 
         nextToken();
         CodeGenerator.generateCall(symbol.address);
+        CodeGenerator.generateLoadReturn();
 
 
     }
@@ -150,8 +151,11 @@ public class Syntactic {
         boolean jumpped = false;
         int label = Symbol.nextAvailableLabel;
         while (currentToken.is(Token.SPROCEDIMENTO) || currentToken.is(Token.SFUNCAO)) {
-            CodeGenerator.generateJump(Symbol.nextAvailableLabel++);
-            jumpped = true;
+          if(!jumpped)
+          {
+              CodeGenerator.generateJump(Symbol.nextAvailableLabel++);
+              jumpped = true;
+          }
             if (currentToken.is(Token.SPROCEDIMENTO)) {
                 analyzeProcedureDeclaration();
             } else {
