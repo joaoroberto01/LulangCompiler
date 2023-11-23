@@ -1,52 +1,19 @@
 {Teste 1 - OK}
 programa test1;
 
-var a,b,c: inteiro;
+var a: booleano;
+  x,y: inteiro;
 
 {proc 1}
-procedimento analisa1;
+funcao analisa1: inteiro;
 var a, x: inteiro;
        z: booleano;
-       procedimento analisa3;
-        var a : inteiro;
-        inicio
-        leia(a)
-        fim;
 inicio
-  a := ((89 + 3 * 5) + (-5) + x);
-  se x > 1  entao
-      x:= 0
-  senao inicio
-      leia(x);
-   analisa3;
-  fim;
-  enquanto (a != 89) e (a <= 1000)  {condicao de parada}
-  faca inicio
-           a:= x+x
-       fim;
-  escreva(a)
-fim;
-
-
-procedimento analisa2;
-    var analisa1: inteiro;
-    funcao a;
-    inicio
-      leia(a);
-      b:= a*a+(c div b)
-    fim;
-inicio
-  leia(a);
-  b:= a*a+(c div b)
+  a := ((89 + 3 * 5) + (-5) + x)
 fim;
 
 inicio
-    analisa1;
-    analisa2;
-
-    se b > (c+ a*a)
-    entao escreva(b)
-    senao escreva(c)
+    a := x > y ou y < x
 fim.
 
 {fim}
