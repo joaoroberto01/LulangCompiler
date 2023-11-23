@@ -69,13 +69,18 @@ public class Syntactic {
         analyzeVariablesStep();
         analyzeSubRoutine();
         analyzeCommands();
+        boolean shouldReturn = !SymbolTable.isMainScope();
 
         int deallocatedSize = SymbolTable.popUntilLocalScope();
-        if (deallocatedSize == 0) return;
+        if (deallocatedSize != 0){
+            Symbol.nextAvailableAddress -= deallocatedSize;
 
-        Symbol.nextAvailableAddress -= deallocatedSize;
-
-        CodeGenerator.generateDalloc((Symbol.nextAvailableAddress), deallocatedSize);
+            CodeGenerator.generateDalloc((Symbol.nextAvailableAddress), deallocatedSize);
+        }
+        if(shouldReturn)
+        {
+            CodeGenerator.generateReturn();
+        }
 
     }
 
@@ -182,8 +187,7 @@ public class Syntactic {
     }
 
     private static void analyzeProcedureDeclaration() {
-        int procedureLabel = Symbol.nextAvailableLabel++;
-        CodeGenerator.generateLabel(procedureLabel);
+
         nextToken();
 
         if (!currentToken.is(Token.SIDENTIFICADOR)) {
@@ -194,8 +198,9 @@ public class Syntactic {
             throw SemanticException.procedureDeclaredException(currentToken.lexeme, true);
         }
         Symbol insertedSymbol = SymbolTable.insertSymbol(new Symbol(currentToken.lexeme, SymbolType.PROCEDIMENTO, true));
-        insertedSymbol.address = procedureLabel;
+        insertedSymbol.address =  Symbol.nextAvailableLabel++;
 
+        CodeGenerator.generateLabel( insertedSymbol.address);
         nextToken();
         if (!currentToken.is(Token.SPONTO_VIRGULA)) {
             throw new SyntacticException(";");
