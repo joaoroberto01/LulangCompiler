@@ -10,11 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d59deec9-f7b5-4dd6-82f4-22bfa5ddcdf0" name="Changes" comment="problema do jump no escopo +excessivo e call em duplicidade + Load do resultado da funcao dps do call.&#10;(FAZER MERGE COM O RETURN E STORE EM 0)">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/perguntas_pro_freitas/PERGUNTAS_PRO_FREITAS.md" beforeDir="false" afterPath="$PROJECT_DIR$/perguntas_pro_freitas/PERGUNTAS_PRO_FREITAS.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sint1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/sint1.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -362,12 +358,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/analyzers/Syntactic.java</url>
-          <line>180</line>
+          <line>185</line>
           <option name="timeStamp" value="128" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/analyzers/Syntactic.java</url>
-          <line>90</line>
+          <line>95</line>
           <option name="timeStamp" value="129" />
         </line-breakpoint>
       </breakpoints>

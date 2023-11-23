@@ -55,6 +55,7 @@ public class Syntactic {
         if (!currentToken.is(Token.SPONTO)) {
             throw new SyntacticException(".");
         }
+        CodeGenerator.generateDalloc(0, 1);
         CodeGenerator.generateHalt();
         expectedEOF = true;
         nextToken();
