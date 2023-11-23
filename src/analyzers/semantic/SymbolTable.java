@@ -109,6 +109,18 @@ public class SymbolTable {
         return false;
     }
 
+    public static boolean isMainScope() {
+        for (int i = symbolStack.size() - 1; i > 0; i--) {
+            Symbol symbol = symbolStack.get(i);
+
+            if (symbol.localScope) {
+               return false;
+            }
+        }
+
+        return true;
+    }
+
     // procurar se existe duplicidade de var em nivel LOCAL
     public static boolean searchDuplicityVarTable(String lexeme) {
         return has(lexeme, true, SymbolType.VARIAVEL_BOOLEANO, SymbolType.VARIAVEL_INTEIRO);

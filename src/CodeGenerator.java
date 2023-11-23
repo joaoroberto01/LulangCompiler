@@ -42,6 +42,9 @@ public class CodeGenerator {
         appendCode("CALL", String.valueOf(label), "", "");
     }
 
+    public static void generateReturn() {
+        appendCode("RETURN", "", "", "");
+    }
     public static void generateJumpF(int label) {
         appendCode("JMPF", String.valueOf(label), "", "");
     }
