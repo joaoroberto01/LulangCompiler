@@ -147,10 +147,10 @@ public class CodeGenerator {
             appendCode("LDC", "0", "", "");
         } else if (SymbolType.variables.contains(symbol.type)) {
             appendCode("LDV", String.valueOf(symbol.address), "", "");
-        }// else if (SymbolType.functions.contains(symbol.type)) {
-//            appendCode("CALL", String.valueOf(symbol.address), "", "");
-//
-//        }
+        } else if (SymbolType.functions.contains(symbol.type)) {
+            CodeGenerator.generateCall(symbol.address);
+            CodeGenerator.generateLoadReturn();
+        }
     }
 
 

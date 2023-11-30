@@ -94,8 +94,8 @@ public class Syntactic {
         exp.add(currentToken);
 
         nextToken();
-        CodeGenerator.generateCall(symbol.address);
-        CodeGenerator.generateLoadReturn();
+//        CodeGenerator.generateCall(symbol.address);
+//        CodeGenerator.generateLoadReturn();
 
 
     }
