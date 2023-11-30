@@ -35,18 +35,18 @@ public class CodeGenerator {
     }
 
     public static void generateJump(int label) {
-        appendCode("JMP", String.valueOf(label), "", "");
+        appendCode("JMP", "L" + label, "", "");
     }
 
     public static void generateCall(int label) {
-        appendCode("CALL", String.valueOf(label), "", "");
+        appendCode("CALL", "L" + label, "", "");
     }
 
     public static void generateReturn() {
         appendCode("RETURN", "", "", "");
     }
     public static void generateJumpF(int label) {
-        appendCode("JMPF", String.valueOf(label), "", "");
+        appendCode("JMPF", "L" + label, "", "");
     }
 
     public static void generateAlloc(int address, int size) {
@@ -69,7 +69,7 @@ public class CodeGenerator {
     }
 
     public static void generateLabel(int label) {
-        appendCode("NULL", "", "", String.valueOf(label));
+        appendCode("NULL", "", "", "L" + label);
 
     }
 
