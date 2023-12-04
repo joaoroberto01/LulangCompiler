@@ -10,6 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d59deec9-f7b5-4dd6-82f4-22bfa5ddcdf0" name="Changes" comment="problema do jump no escopo +excessivo e call em duplicidade + Load do resultado da funcao dps do call.&#10;(FAZER MERGE COM O RETURN E STORE EM 0)">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/compiler_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/compiler_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -141,6 +142,9 @@
       <workItem from="1700668823841" duration="599000" />
       <workItem from="1700744906486" duration="1741000" />
       <workItem from="1700746838173" duration="1504000" />
+      <workItem from="1701301900005" duration="597000" />
+      <workItem from="1701305681669" duration="1513000" />
+      <workItem from="1701365550145" duration="72000" />
     </task>
     <task id="LOCAL-00001" summary="First commit">
       <created>1693348442055</created>
