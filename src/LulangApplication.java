@@ -11,7 +11,7 @@ public class LulangApplication {
         try {
             Syntactic.analyze(filepath);
 
-            System.out.println("successfully compilated source code");
+            System.out.println("successfully compiled source code");
             CodeGenerator.saveFile(filepath);
         } catch (NoSuchFileException e) {
             System.err.printf("file '%s' not found%n", filepath);
