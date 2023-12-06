@@ -243,11 +243,14 @@ public class Syntactic {
         analyzeExpression();
 
         List<Symbol> postfixlist = PosfixConverter.infixToPostfix(exp);
-        PosfixConverter.semantic(postfixlist);
+        SymbolType expressionType = PosfixConverter.semantic(postfixlist);
         CodeGenerator.generateExpression(postfixlist);
         int outLabel = Symbol.nextAvailableLabel++;
         CodeGenerator.generateJumpF(outLabel);
 
+        if (expressionType != SymbolType.VARIAVEL_BOOLEANO) {
+            throw new SemanticException("non boolean expression");
+        }
 
         if (!currentToken.is(Token.SFACA)) {
             throw new SyntacticException("faca");
@@ -459,8 +462,12 @@ public class Syntactic {
         analyzeExpression();
 
         List<Symbol>postfixlist  =  PosfixConverter.infixToPostfix(exp);
-        PosfixConverter.semantic(postfixlist);
+        SymbolType expressionType = PosfixConverter.semantic(postfixlist);
         CodeGenerator.generateExpression(postfixlist);
+
+        if (expressionType != SymbolType.VARIAVEL_BOOLEANO) {
+            throw new SemanticException("non boolean expression");
+        }
 
         if (!currentToken.is(Token.SENTAO)) {
             throw new SyntacticException("entao");
